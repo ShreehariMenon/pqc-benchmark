@@ -175,3 +175,12 @@ Algorithm implementations are subject to their respective licenses.
 ---
 
 *Benchmarked March 2026 · x86-64 · Ubuntu 22.04*
+
+---
+
+## 👤 Author
+
+**Shreehari Menon**  
+PQC Benchmark Implementation & Visualization · 2026
+
+
