@@ -1,11 +1,14 @@
-# How to Cite
+# Citation
 
-If you use these benchmark results, please cite:
+If you use this benchmark dataset or analysis in academic work, please cite:
 
+Shreehari Menon (2026).
 **PQC Open Source Library Benchmark 2026**  
-Author: Shreehari Menon  
-Platform: x86-64, Ubuntu 22.04  
-Date: March 2026  
-URL: https://github.com/shreeharimenon/pqc-benchmark
+GitHub Repository.
+https://github.com/ShreehariMenon/pqc-benchmark
 
-Algorithms standardized by NIST: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA)
+Benchmark platform: x86-64 architecture, Ubuntu 22.04.
+Includes performance evaluation of NIST PQC standards
+(FIPS 203 ML-KEM, FIPS 204 ML-DSA, FIPS 205 SLH-DSA)
+and selected alternate schemes.
+
