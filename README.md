@@ -18,7 +18,7 @@
 The dashboard includes:
 - KEM comparison (keygen / encaps / decaps) with log/linear scale toggle
 - Signature comparison (sign / keygen / verify) with algorithm family filter
-- Heat map — library × algorithm performance matrix
+- Heat map - library × algorithm performance matrix
 - Security vs Speed scatter plot
 - Library profiles with detailed strengths/limitations
 - Full searchable data table with CSV export
@@ -27,7 +27,7 @@ The dashboard includes:
 
 ## 🎯 What Was Measured
 
-We benchmarked all **NIST post-quantum standards** and major alternates:
+All NIST post-quantum standards and major alternate schemes were benchmarked under identical experimental conditions.
 
 | Standard | Algorithm | Security Levels |
 |---|---|---|
@@ -48,9 +48,9 @@ We benchmarked all **NIST post-quantum standards** and major alternates:
 
 | Library | Language | Algorithms | Version | Notes |
 |---|---|---|---|---|
-| [liboqs](https://github.com/open-quantum-safe/liboqs) | C + Python/Go/Java | 247 | 0.15.0 | **Fastest** — AVX2 optimized |
+| [liboqs](https://github.com/open-quantum-safe/liboqs) | C + Python/Go/Java | 247 | 0.15.0 | **Fastest** - AVX2 optimized |
 | [pqcrypto](https://github.com/nicowillis/pqcrypto) | Python | 21 | 0.4.0 | Easiest pip install |
-| [CIRCL](https://github.com/cloudflare/circl) | Go | 6 | 1.6.3 | **Fastest encaps** — Cloudflare |
+| [CIRCL](https://github.com/cloudflare/circl) | Go | 6 | 1.6.3 | **Fastest encaps** - Cloudflare |
 | [Bouncy Castle](https://www.bouncycastle.org) | Java | 11 | 1.78 | FIPS certified |
 | [PQClean](https://github.com/PQClean/PQClean) | C reference | 35 | latest | Most auditable |
 | [oqs-provider](https://github.com/open-quantum-safe/oqs-provider) | C/OpenSSL | 18 | 0.12.0 | TLS 1.3 integration |
@@ -80,7 +80,7 @@ Cloudflare's Go implementation achieves **94,000 ops/sec** for ML-KEM-512 encaps
 Falcon-512 keygen: liboqs 7.8ms vs Bouncy Castle 47.4ms. JVM overhead is unavoidable.
 
 ### 5. McEliece: massive keys but fast encapsulation
-261KB public key, 166ms keygen — but only **0.07ms encapsulation**. Key size is the real barrier.
+261KB public key, 166ms keygen - but only **0.07ms encapsulation**. Key size is the real barrier.
 
 ---
 
@@ -121,7 +121,7 @@ pqc-benchmark/
 
 - **Platform:** x86-64, Ubuntu 22.04, Intel Core CPU
 - **Iterations:** 20 per operation
-- **Timer:** `clock_gettime(CLOCK_MONOTONIC)` — nanosecond precision
+- **Timer:** `clock_gettime(CLOCK_MONOTONIC)` - nanosecond precision
 - **Metric:** Mean time in milliseconds across all iterations
 - **Warmup:** 1 warmup iteration before measurement
 - **Optimization:** Libraries compiled with `-O3` and `-fomit-frame-pointer` where applicable
