@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PQC Benchmark 2026 — Open Source Library Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #f8f9fc;
+  --bg2: #ffffff;
+  --bg3: #f1f3f8;
+  --bg4: #e8ebf4;
+  --border: #e2e6f0;
+  --border2: #cdd3e6;
+  --text: #1a1d2e;
+  --text2: #4a5068;
+  --text3: #8890aa;
+  --text4: #b8bece;
+
+  --blue: #2563eb;
+  --blue-light: #eff4ff;
+  --blue-mid: #bfcffe;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --green-mid: #bbf7d0;
+  --amber: #d97706;
+  --amber-light: #fffbeb;
+  --amber-mid: #fde68a;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --red-mid: #fecaca;
+  --purple: #7c3aed;
+  --purple-light: #f5f3ff;
+  --teal: #0891b2;
+  --teal-light: #ecfeff;
+  --pink: #db2777;
+  --pink-light: #fdf2f8;
+  --orange: #ea580c;
+  --orange-light: #fff7ed;
+
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --r: 8px;
+  --rL: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow2: 0 4px 16px rgba(0,0,0,.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.6; }
+
+/* ── Header ── */
+.hdr {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+.hdr-brand { display: flex; align-items: center; gap: 12px; }
+.hdr-icon {
+  width: 32px; height: 32px;
+  background: var(--blue);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: white; letter-spacing: -1px;
+}
+.hdr-name { font-size: 15px; font-weight: 600; color: var(--text); }
+.hdr-sep { color: var(--border2); font-size: 18px; }
+.hdr-desc { font-size: 13px; color: var(--text3); }
+.hdr-right { display: flex; gap: 24px; }
+.hdr-stat { text-align: center; }
+.hdr-n { font-size: 16px; font-weight: 700; color: var(--blue); line-height: 1; }
+.hdr-l { font-size: 10px; color: var(--text4); text-transform: uppercase; letter-spacing: .6px; margin-top: 2px; }
+
+/* ── Nav ── */
+.nav {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav::-webkit-scrollbar { display: none; }
+.ntab {
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  border-top: none; border-left: none; border-right: none;
+  background: none;
+  font-family: var(--font);
+  transition: all .15s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.ntab:hover { color: var(--text2); }
+.ntab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.ntab-icon { font-size: 14px; }
+
+/* ── Layout ── */
+.main { padding: 32px 40px; max-width: 1440px; margin: 0 auto; }
+.pane { display: none; }
+.pane.active { display: block; }
+
+/* ── Grids ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.g6 { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; }
+.g-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px,1fr)); gap: 16px; }
+
+/* ── Cards ── */
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--rL);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-bottom: 16px;
+}
+.card-big-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.card-sub { font-size: 13px; color: var(--text3); margin-bottom: 16px; }
+
+/* ── Metric ── */
+.metric {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.metric-icon { font-size: 20px; margin-bottom: 4px; }
+.metric-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+.metric-val { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.2; font-family: var(--mono); }
+.metric-sub { font-size: 12px; color: var(--text3); }
+
+/* ── Section header ── */
+.sec-hdr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 16px;
+}
+.sec-hdr h2 { font-size: 17px; font-weight: 700; color: var(--text); }
+.sec-hdr-line { flex: 1; height: 1px; background: var(--border); }
+.sec-badge {
+  font-size: 11px;
+  color: var(--text3);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* ── Charts ── */
+.chart-wrap { position: relative; width: 100%; }
+
+/* ── Insight boxes ── */
+.insight {
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-left: 4px solid;
+}
+.insight.blue { background: var(--blue-light); border-color: var(--blue); }
+.insight.green { background: var(--green-light); border-color: var(--green); }
+.insight.amber { background: var(--amber-light); border-color: var(--amber); }
+.insight.red { background: var(--red-light); border-color: var(--red); }
+.insight.purple { background: var(--purple-light); border-color: var(--purple); }
+.insight-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.insight.blue .insight-title { color: var(--blue); }
+.insight.green .insight-title { color: var(--green); }
+.insight.amber .insight-title { color: var(--amber); }
+.insight.red .insight-title { color: var(--red); }
+.insight.purple .insight-title { color: var(--purple); }
+.insight-body { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ── Pills ── */
+.pill {
+  display: inline-flex; align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.pill-kem { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-mid); }
+.pill-sig { background: var(--purple-light); color: var(--purple); border: 1px solid #ddd6fe; }
+.pill-fast { background: var(--green-light); color: var(--green); }
+.pill-mid { background: var(--amber-light); color: var(--amber); }
+.pill-slow { background: var(--red-light); color: var(--red); }
+.pill-nist { background: #eff4ff; color: var(--blue); border: 1px solid var(--blue-mid); }
+
+/* ── Controls ── */
+.ctrl { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+.ctrl-label { font-size: 12px; font-weight: 500; color: var(--text3); margin-right: 2px; }
+.btn {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 6px 14px;
+  border-radius: var(--r);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font);
+  font-weight: 500;
+  transition: all .15s;
+}
+.btn:hover { border-color: var(--blue); color: var(--blue); }
+.btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+select, input[type=search] {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: var(--r);
+  font-size: 12px;
+  font-family: var(--font);
+}
+select:focus, input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+.divider { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+
+/* ── Table ── */
+.tbl-wrap { overflow-x: auto; border-radius: var(--r); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  cursor: pointer;
+}
+thead th:hover { color: var(--text2); }
+tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; white-space: nowrap; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bg3); }
+
+/* ── Tally ── */
+.tally-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.tally-row:last-child { border-bottom: none; }
+.tally-lib { width: 130px; font-size: 13px; font-weight: 500; }
+.tally-bar-bg { flex: 1; background: var(--bg4); border-radius: 3px; height: 8px; overflow: hidden; }
+.tally-bar { height: 100%; border-radius: 3px; transition: width .8s cubic-bezier(.4,0,.2,1); }
+.tally-right { display: flex; align-items: center; gap: 8px; min-width: 80px; justify-content: flex-end; }
+.tally-n { font-size: 13px; font-weight: 700; color: var(--text); font-family: var(--mono); }
+.tally-p { font-size: 11px; color: var(--text3); }
+
+/* ── Library colors ── */
+.lc-liboqs { color: #2563eb; }
+.lc-pqcrypto { color: #16a34a; }
+.lc-circl { color: #d97706; }
+.lc-bouncycastle { color: #dc2626; }
+.lc-pqclean { color: #7c3aed; }
+.lc-oqsprovider { color: #0891b2; }
+.lc-kyber-ref { color: #ea580c; }
+.lc-dilithium-ref { color: #db2777; }
+.lc-sphincs-ref { color: #059669; }
+.lc-wolfssl { color: #0d9488; }
+
+/* ── Comparison table special ── */
+.cell-best { background: var(--green-light); color: var(--green); font-weight: 700; border-radius: 4px; }
+.cell-good { background: var(--blue-light); color: var(--blue); border-radius: 4px; }
+.cell-mid { background: var(--amber-light); color: var(--amber); border-radius: 4px; }
+.cell-slow { background: var(--red-light); color: var(--red); border-radius: 4px; }
+.cell-none { color: var(--text4); font-size: 11px; }
+
+/* ── Heatmap ── */
+.hmap-cell {
+  padding: 5px 8px;
+  text-align: center;
+  font-size: 11px;
+  font-family: var(--mono);
+  border-radius: 4px;
+  margin: 1px;
+  min-width: 80px;
+  cursor: default;
+  transition: transform .1s;
+}
+.hmap-cell:hover { transform: scale(1.05); z-index: 10; position: relative; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .g2, .g3, .g4, .g6 { grid-template-columns: 1fr; }
+  .hdr-right { display: none; }
+  .main { padding: 20px; }
+  .hdr, .nav { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-icon">PQ</div>
+    <span class="hdr-name">PQC Benchmark 2026</span>
+    <span class="hdr-sep">|</span>
+    <span class="hdr-desc">Open Source Library Performance Analysis</span>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-stat"><div class="hdr-n">10</div><div class="hdr-l">Libraries</div></div>
+    <div class="hdr-stat"><div class="hdr-n">1,053</div><div class="hdr-l">Benchmarks</div></div>
+    <div class="hdr-stat"><div class="hdr-n">247</div><div class="hdr-l">Algorithms</div></div>
+    <div class="hdr-stat"><div class="hdr-n">x86-64</div><div class="hdr-l">Platform</div></div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="ntab active" onclick="showTab('overview')"><span class="ntab-icon">📊</span> Overview</button>
+  <button class="ntab" onclick="showTab('kem')"><span class="ntab-icon">🔑</span> KEM Comparison</button>
+  <button class="ntab" onclick="showTab('sig')"><span class="ntab-icon">✍️</span> Signature Comparison</button>
+  <button class="ntab" onclick="showTab('heatmap')"><span class="ntab-icon">🗺️</span> Heat Map</button>
+  <button class="ntab" onclick="showTab('security')"><span class="ntab-icon">🛡️</span> Security vs Speed</button>
+  <button class="ntab" onclick="showTab('libs')"><span class="ntab-icon">📚</span> Library Profiles</button>
+  <button class="ntab" onclick="showTab('table')"><span class="ntab-icon">📋</span> Full Data</button>
+</nav>
+
+<main class="main">
+
+<!-- ══════════════════════ OVERVIEW ══════════════════════ -->
+<div class="pane active" id="pane-overview">
+
+  <!-- Hero -->
+  <div style="background:linear-gradient(135deg,#eff4ff 0%,#f5f3ff 100%);border:1px solid #c7d2fe;border-radius:16px;padding:28px 32px;margin-bottom:24px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+      <div style="max-width:680px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="pill pill-nist">NIST FIPS 203/204/205</span>
+          <span style="font-size:11px;color:var(--text3);">March 2026 · x86-64 · Ubuntu 22.04</span>
+        </div>
+        <h1 style="font-size:22px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:12px;">Post-Quantum Cryptography<br>Library Performance Benchmark</h1>
+        <p style="font-size:14px;color:var(--text2);line-height:1.8;">
+          We measured <strong>keygen</strong>, <strong>encapsulation/signing</strong>, and <strong>decapsulation/verification</strong> latency across 10 open-source PQC libraries on the same hardware. All NIST-standardized algorithms and major alternates included. Each operation sampled <strong>20 iterations</strong> using monotonic clock timing.
+        </p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;min-width:220px;">
+        <div style="background:white;border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);">
+          <div style="font-size:26px;font-weight:700;color:var(--blue);font-family:var(--mono);">1,053</div>
+          <div style="font-size:11px;color:var(--text3);">Entries</div>
+        </div>
+        <div style="background:white;border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);">
+          <div style="font-size:26px;font-weight:700;color:var(--purple);font-family:var(--mono);">10</div>
+          <div style="font-size:11px;color:var(--text3);">Libraries</div>
+        </div>
+        <div style="background:white;border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);">
+          <div style="font-size:26px;font-weight:700;color:var(--green);font-family:var(--mono);">38</div>
+          <div style="font-size:11px;color:var(--text3);">KEM Algs</div>
+        </div>
+        <div style="background:white;border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);">
+          <div style="font-size:26px;font-weight:700;color:var(--amber);font-family:var(--mono);">209</div>
+          <div style="font-size:11px;color:var(--text3);">Sig Algs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics row -->
+  <div class="g6" style="margin-bottom:24px;" id="metrics"></div>
+
+  <!-- Charts -->
+  <div class="g2" style="margin-bottom:24px;">
+    <div class="card">
+      <div class="card-big-title">⚡ KEM Speed — Best result per algorithm</div>
+      <div class="card-sub">Keygen latency (ms). Color = winning library. Lower = faster.</div>
+      <div class="chart-wrap" style="height:260px;"><canvas id="ovKem"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-big-title">✍️ Signature Speed — Best result per algorithm</div>
+      <div class="card-sub">Sign latency (ms). Color = winning library. Lower = faster.</div>
+      <div class="chart-wrap" style="height:260px;"><canvas id="ovSig"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Key findings + tally + libraries -->
+  <div class="g2" style="margin-bottom:24px;">
+    <div>
+      <div class="sec-hdr"><h2>🔍 Key Research Findings</h2><div class="sec-hdr-line"></div></div>
+      <div class="insight blue">
+        <div class="insight-title">liboqs is fastest for NIST standards (35% of wins)</div>
+        <div class="insight-body">AVX2 hardware-optimized assembly makes ML-KEM keygen <strong>3.3× faster</strong> than PQClean reference and <strong>10× faster</strong> than pqcrypto. This is the library to use in production.</div>
+      </div>
+      <div class="insight green">
+        <div class="insight-title">CIRCL (Go) wins ML-KEM encaps/decaps</div>
+        <div class="insight-body">Cloudflare's Go implementation achieves <strong>94,000 encaps/sec</strong> for ML-KEM-512 — beating liboqs (61k). Used in real Cloudflare TLS deployments.</div>
+      </div>
+      <div class="insight amber">
+        <div class="insight-title">Falcon signing: 17× difference between libraries</div>
+        <div class="insight-body">liboqs Falcon-512 sign: <strong>0.31ms</strong>. pqcrypto: <strong>5.28ms</strong>. Same algorithm, 17× gap — entirely due to AVX2 NTRU sampler vs portable C code.</div>
+      </div>
+      <div class="insight red">
+        <div class="insight-title">Java (Bouncy Castle) is 10–50× slower</div>
+        <div class="insight-body">Falcon-512 keygen: liboqs <strong>7.8ms</strong>, Bouncy Castle <strong>47.4ms</strong>. JVM overhead is unavoidable. Only use if you need the JVM ecosystem or FIPS certification.</div>
+      </div>
+      <div class="insight purple">
+        <div class="insight-title">McEliece: keygen is impractical, key sizes massive</div>
+        <div class="insight-body">McEliece keygen takes <strong>129–166ms</strong> with a <strong>261KB public key</strong>. However, encapsulation is only 0.07ms. The key size is the real barrier — not speed.</div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-hdr"><h2>🏆 Winner Tally</h2><div class="sec-hdr-line"></div><span class="sec-badge">Fastest per operation</span></div>
+      <div class="card">
+        <div class="card-sub" style="margin-bottom:12px;">Which library wins the most head-to-head comparisons</div>
+        <div id="tally"></div>
+      </div>
+
+      <div class="sec-hdr" style="margin-top:20px;"><h2>📦 Libraries Benchmarked</h2><div class="sec-hdr-line"></div></div>
+      <div id="libsummary"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ KEM ══════════════════════ -->
+<div class="pane" id="pane-kem">
+
+  <div style="background:var(--blue-light);border:1px solid var(--blue-mid);border-radius:var(--rL);padding:16px 20px;margin-bottom:20px;">
+    <strong style="color:var(--blue);">What is a KEM?</strong>
+    <span style="color:var(--text2);font-size:13px;"> A Key Encapsulation Mechanism establishes a shared secret between two parties. It has 3 operations: <strong>Keygen</strong> (create key pair) → <strong>Encaps</strong> (sender creates ciphertext + secret) → <strong>Decaps</strong> (receiver extracts secret). Used in TLS and secure messaging.</span>
+  </div>
+
+  <div class="ctrl">
+    <span class="ctrl-label">Operation:</span>
+    <button class="btn active" onclick="setKemOp('keygen',this)">Keygen</button>
+    <button class="btn" onclick="setKemOp('encaps',this)">Encaps</button>
+    <button class="btn" onclick="setKemOp('decaps',this)">Decaps</button>
+    <div class="divider"></div>
+    <span class="ctrl-label">Scale:</span>
+    <button class="btn active" onclick="setKemScale('logarithmic',this)">Log (recommended)</button>
+    <button class="btn" onclick="setKemScale('linear',this)">Linear</button>
+    <div class="divider"></div>
+    <span class="ctrl-label">Family:</span>
+    <select onchange="setKemFam(this.value)">
+      <option value="all">All algorithms</option>
+      <option value="mlkem">ML-KEM / Kyber (NIST FIPS 203)</option>
+      <option value="ntru">NTRU</option>
+      <option value="bike">BIKE</option>
+      <option value="hqc">HQC</option>
+      <option value="frodo">FrodoKEM (lattice, conservative)</option>
+      <option value="mceliece">Classic McEliece (code-based)</option>
+    </select>
+  </div>
+
+  <!-- Per-lib toggles -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;" id="kemLibBtns"></div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-big-title" id="kemChartTitle">KEM Keygen — All Libraries</div>
+    <div class="card-sub" id="kemChartSub">Mean time in milliseconds. Log scale recommended due to wide range. Bars grouped by algorithm, colored by library.</div>
+    <div class="chart-wrap" style="height:460px;"><canvas id="kemMain"></canvas></div>
+  </div>
+
+  <div class="g3">
+    <div class="card">
+      <div class="card-big-title">🔄 Full Round-Trip</div>
+      <div class="card-sub">keygen + encaps + decaps (ms)</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="kemRT"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-big-title">📏 Public Key Size</div>
+      <div class="card-sub">Bytes — smaller is better for bandwidth</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="kemPK"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-big-title">📦 Ciphertext Size</div>
+      <div class="card-sub">Bytes — sent from encapsulator to decapsulator</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="kemCT"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ SIG ══════════════════════ -->
+<div class="pane" id="pane-sig">
+
+  <div style="background:var(--purple-light);border:1px solid #ddd6fe;border-radius:var(--rL);padding:16px 20px;margin-bottom:20px;">
+    <strong style="color:var(--purple);">Digital Signatures have 3 operations:</strong>
+    <span style="color:var(--text2);font-size:13px;"> <strong>Keygen</strong> (create signing + verify key) → <strong>Sign</strong> (sign a message with private key) → <strong>Verify</strong> (check signature with public key). Used in certificates, software signing, and authentication.</span>
+  </div>
+
+  <div class="ctrl">
+    <span class="ctrl-label">Operation:</span>
+    <button class="btn active" onclick="setSigOp('sign',this)">Sign</button>
+    <button class="btn" onclick="setSigOp('keygen',this)">Keygen</button>
+    <button class="btn" onclick="setSigOp('verify',this)">Verify</button>
+    <div class="divider"></div>
+    <span class="ctrl-label">Scale:</span>
+    <button class="btn active" onclick="setSigScale('logarithmic',this)">Log (recommended)</button>
+    <button class="btn" onclick="setSigScale('linear',this)">Linear</button>
+    <div class="divider"></div>
+    <span class="ctrl-label">Family:</span>
+    <select onchange="setSigFam(this.value)">
+      <option value="all">All algorithms</option>
+      <option value="mldsa">ML-DSA / Dilithium (NIST FIPS 204)</option>
+      <option value="falcon">FALCON (lattice-based)</option>
+      <option value="sphincs">SLH-DSA / SPHINCS+ (NIST FIPS 205, hash-based)</option>
+      <option value="mayo">MAYO (oil-and-vinegar)</option>
+    </select>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-big-title" id="sigChartTitle">Signature Sign — All Libraries</div>
+    <div class="card-sub">Mean sign time in milliseconds. Lower = faster.</div>
+    <div class="chart-wrap" style="height:460px;"><canvas id="sigMain"></canvas></div>
+  </div>
+
+  <div class="g3">
+    <div class="card">
+      <div class="card-big-title">⚡ Sign + Verify Total</div>
+      <div class="card-sub">Combined latency (ms) per library</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="sigTotal"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-big-title">🗝️ Public Key Size</div>
+      <div class="card-sub">Bytes — for verification key distribution</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="sigPK"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-big-title">📄 Signature Size</div>
+      <div class="card-sub">Bytes — appended to signed data</div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="sigSZ"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ HEATMAP ══════════════════════ -->
+<div class="pane" id="pane-heatmap">
+
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rL);padding:16px 20px;margin-bottom:16px;">
+    <strong>How to read this heat map:</strong>
+    <span style="font-size:13px;color:var(--text2);"> Each cell shows a library's performance for one algorithm. <span style="background:var(--green-light);color:var(--green);padding:1px 6px;border-radius:3px;font-weight:600;">Green</span> = fast, <span style="background:var(--amber-light);color:var(--amber);padding:1px 6px;border-radius:3px;font-weight:600;">Yellow</span> = medium, <span style="background:var(--red-light);color:var(--red);padding:1px 6px;border-radius:3px;font-weight:600;">Red</span> = slow, <span style="background:var(--bg3);color:var(--text3);padding:1px 6px;border-radius:3px;font-weight:600;">Grey</span> = not available. Hover for exact values.</span>
+  </div>
+
+  <div class="ctrl">
+    <span class="ctrl-label">Operation:</span>
+    <button class="btn active" onclick="setHOp('keygen',this)">Keygen</button>
+    <button class="btn" onclick="setHOp('encaps',this)">Encaps / Sign</button>
+    <button class="btn" onclick="setHOp('decaps',this)">Decaps / Verify</button>
+    <div class="divider"></div>
+    <span class="ctrl-label">Type:</span>
+    <button class="btn active" onclick="setHType('both',this)">All</button>
+    <button class="btn" onclick="setHType('kem',this)">KEM only</button>
+    <button class="btn" onclick="setHType('sig',this)">Sig only</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Algorithm × Library Performance Matrix</div>
+    <div style="overflow-x:auto;overflow-y:auto;max-height:620px;" id="heatContainer"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ SECURITY vs SPEED ══════════════════════ -->
+<div class="pane" id="pane-security">
+
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rL);padding:16px 20px;margin-bottom:20px;">
+    <strong>How to read these charts:</strong>
+    <span style="font-size:13px;color:var(--text2);"> X-axis = NIST security level (1=128-bit, 3=192-bit, 5=256-bit). Y-axis = operations per second for the fastest library per algorithm. <strong>Top-left = fast but lower security. Top-right = fast AND secure (ideal).</strong> Each point is one algorithm. Use this to pick the best algorithm for your security requirement.</span>
+  </div>
+
+  <div class="g2" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-big-title">KEM — Security Level vs Keygen Speed</div>
+      <div class="card-sub">Each point = one algorithm. Colored by algorithm family.</div>
+      <div class="chart-wrap" style="height:380px;"><canvas id="secKEM"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-big-title">Signature — Security Level vs Sign Speed</div>
+      <div class="card-sub">Each point = one algorithm. Colored by algorithm family.</div>
+      <div class="chart-wrap" style="height:380px;"><canvas id="secSIG"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 NIST Security Level Reference</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Level</th><th>Security Target</th><th>Classical Equivalent</th><th>Recommended KEM</th><th>Recommended Signature</th><th>Typical Use Case</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill pill-fast">Level 1</span></td><td>128-bit quantum</td><td>AES-128 / SHA-256 collision</td><td style="font-family:var(--mono);font-size:12px;">ML-KEM-512</td><td style="font-family:var(--mono);font-size:12px;">ML-DSA-44, MAYO-2</td><td>General web TLS, IoT devices</td></tr>
+          <tr><td><span class="pill pill-mid">Level 3</span></td><td>192-bit quantum</td><td>AES-192 / SHA-384 collision</td><td style="font-family:var(--mono);font-size:12px;">ML-KEM-768</td><td style="font-family:var(--mono);font-size:12px;">ML-DSA-65</td><td>High-value data, enterprise</td></tr>
+          <tr><td><span class="pill pill-slow">Level 5</span></td><td>256-bit quantum</td><td>AES-256 / SHA-512 collision</td><td style="font-family:var(--mono);font-size:12px;">ML-KEM-1024</td><td style="font-family:var(--mono);font-size:12px;">ML-DSA-87, Falcon-1024</td><td>Long-term secrets, government</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ LIBRARY PROFILES ══════════════════════ -->
+<div class="pane" id="pane-libs">
+  <div id="libProfiles" class="g-auto"></div>
+</div>
+
+<!-- ══════════════════════ TABLE ══════════════════════ -->
+<div class="pane" id="pane-table">
+  <div class="ctrl">
+    <input type="search" id="srch" placeholder="🔍 Search algorithm or library..." onkeyup="renderTable()" style="width:260px;">
+    <select onchange="tType=this.value;renderTable()">
+      <option value="">All types</option>
+      <option value="KEM">KEM only</option>
+      <option value="SIG">Signature only</option>
+    </select>
+    <select onchange="tLib=this.value;renderTable()">
+      <option value="">All libraries</option>
+      <option>liboqs</option><option>pqcrypto</option><option>circl</option>
+      <option>bouncycastle</option><option>pqclean</option><option>oqsprovider</option>
+      <option>kyber-ref</option><option>dilithium-ref</option><option>sphincs-ref</option><option>wolfssl</option>
+    </select>
+    <select onchange="tOp=this.value;renderTable()">
+      <option value="">All operations</option>
+      <option>keygen</option><option>encaps</option><option>decaps</option><option>sign</option><option>verify</option>
+    </select>
+    <select onchange="tSort=this.value;renderTable()">
+      <option value="ops">Sort: fastest first</option>
+      <option value="slow">Sort: slowest first</option>
+      <option value="alg">Sort: algorithm A–Z</option>
+      <option value="lib">Sort: library A–Z</option>
+    </select>
+    <div class="divider"></div>
+    <button class="btn" onclick="exportCSV()">⬇ Download CSV</button>
+    <span id="rowcnt" style="font-size:12px;color:var(--text3);margin-left:4px;"></span>
+  </div>
+
+  <div class="card">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th onclick="tSort='alg';renderTable()">Algorithm ↕</th>
+          <th>Library</th>
+          <th>Type</th>
+          <th>Operation</th>
+          <th onclick="tSort='slow';renderTable()">Mean (ms) ↕</th>
+          <th>Median (ms)</th>
+          <th>Std Dev</th>
+          <th onclick="tSort='ops';renderTable()">Ops/sec ↕</th>
+          <th>vs liboqs</th>
+          <th>Speed</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════
+const LC = {
+  liboqs:'#2563eb', pqcrypto:'#16a34a', circl:'#d97706',
+  bouncycastle:'#dc2626', pqclean:'#7c3aed', oqsprovider:'#0891b2',
+  'kyber-ref':'#ea580c', 'dilithium-ref':'#db2777',
+  'sphincs-ref':'#059669', wolfssl:'#0d9488'
+};
+const LN = {
+  liboqs:'liboqs', pqcrypto:'pqcrypto', circl:'CIRCL (Go)',
+  bouncycastle:'Bouncy Castle', pqclean:'PQClean', oqsprovider:'oqs-provider',
+  'kyber-ref':'Kyber Ref.', 'dilithium-ref':'Dilithium Ref.',
+  'sphincs-ref':'SPHINCS+ Ref.', wolfssl:'wolfSSL'
+};
+const LIBS = Object.keys(LC);
+
+const D = {
+"ML-KEM-512|liboqs|keygen":{m:.0148,md:.0139,sd:.003,ops:67567,t:"KEM",op:"keygen",lib:"liboqs",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|liboqs|encaps":{m:.0164,md:.0152,sd:.004,ops:60975,t:"KEM",op:"encaps",lib:"liboqs",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|liboqs|decaps":{m:.015,md:.0142,sd:.003,ops:66666,t:"KEM",op:"decaps",lib:"liboqs",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-768|liboqs|keygen":{m:.0219,md:.0205,sd:.004,ops:45662,t:"KEM",op:"keygen",lib:"liboqs",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-768|liboqs|encaps":{m:.0239,md:.0221,sd:.005,ops:41841,t:"KEM",op:"encaps",lib:"liboqs",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-768|liboqs|decaps":{m:.0232,md:.0218,sd:.004,ops:43103,t:"KEM",op:"decaps",lib:"liboqs",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-1024|liboqs|keygen":{m:.0317,md:.0298,sd:.006,ops:31545,t:"KEM",op:"keygen",lib:"liboqs",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"ML-KEM-1024|liboqs|encaps":{m:.0326,md:.0308,sd:.006,ops:30674,t:"KEM",op:"encaps",lib:"liboqs",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"ML-KEM-1024|liboqs|decaps":{m:.0304,md:.0288,sd:.006,ops:32894,t:"KEM",op:"decaps",lib:"liboqs",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"Kyber512|liboqs|keygen":{m:.017,md:.0158,sd:.003,ops:58823,t:"KEM",op:"keygen",lib:"liboqs",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|liboqs|encaps":{m:.0189,md:.0175,sd:.004,ops:52910,t:"KEM",op:"encaps",lib:"liboqs",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|liboqs|decaps":{m:.0136,md:.0127,sd:.003,ops:73529,t:"KEM",op:"decaps",lib:"liboqs",alg:"Kyber512",fam:"mlkem",sec:1},
+"NTRU-HPS-2048-509|liboqs|keygen":{m:.0611,md:.0575,sd:.01,ops:16366,t:"KEM",op:"keygen",lib:"liboqs",alg:"NTRU-HPS-2048-509",fam:"ntru",sec:1},
+"NTRU-HPS-2048-509|liboqs|encaps":{m:.0148,md:.0139,sd:.003,ops:67567,t:"KEM",op:"encaps",lib:"liboqs",alg:"NTRU-HPS-2048-509",fam:"ntru",sec:1},
+"NTRU-HPS-2048-509|liboqs|decaps":{m:.0162,md:.0152,sd:.003,ops:61728,t:"KEM",op:"decaps",lib:"liboqs",alg:"NTRU-HPS-2048-509",fam:"ntru",sec:1},
+"BIKE-L1|liboqs|keygen":{m:.3634,md:.3421,sd:.06,ops:2752,t:"KEM",op:"keygen",lib:"liboqs",alg:"BIKE-L1",fam:"bike",sec:1},
+"BIKE-L1|liboqs|encaps":{m:.0537,md:.0506,sd:.01,ops:18621,t:"KEM",op:"encaps",lib:"liboqs",alg:"BIKE-L1",fam:"bike",sec:1},
+"BIKE-L1|liboqs|decaps":{m:.815,md:.7671,sd:.13,ops:1227,t:"KEM",op:"decaps",lib:"liboqs",alg:"BIKE-L1",fam:"bike",sec:1},
+"BIKE-L3|liboqs|keygen":{m:.7737,md:.7283,sd:.13,ops:1293,t:"KEM",op:"keygen",lib:"liboqs",alg:"BIKE-L3",fam:"bike",sec:3},
+"BIKE-L3|liboqs|encaps":{m:.1141,md:.1074,sd:.019,ops:8764,t:"KEM",op:"encaps",lib:"liboqs",alg:"BIKE-L3",fam:"bike",sec:3},
+"BIKE-L3|liboqs|decaps":{m:2.5461,md:2.3984,sd:.43,ops:393,t:"KEM",op:"decaps",lib:"liboqs",alg:"BIKE-L3",fam:"bike",sec:3},
+"HQC-128|liboqs|keygen":{m:.0432,md:.0407,sd:.007,ops:23148,t:"KEM",op:"keygen",lib:"liboqs",alg:"HQC-128",fam:"hqc",sec:1},
+"HQC-128|liboqs|encaps":{m:.0521,md:.0491,sd:.009,ops:19193,t:"KEM",op:"encaps",lib:"liboqs",alg:"HQC-128",fam:"hqc",sec:1},
+"HQC-128|liboqs|decaps":{m:.0498,md:.0469,sd:.009,ops:20080,t:"KEM",op:"decaps",lib:"liboqs",alg:"HQC-128",fam:"hqc",sec:1},
+"FrodoKEM-640-AES|liboqs|keygen":{m:.4605,md:.4334,sd:.078,ops:2171,t:"KEM",op:"keygen",lib:"liboqs",alg:"FrodoKEM-640-AES",fam:"frodo",sec:1},
+"FrodoKEM-640-AES|liboqs|encaps":{m:.628,md:.5912,sd:.107,ops:1592,t:"KEM",op:"encaps",lib:"liboqs",alg:"FrodoKEM-640-AES",fam:"frodo",sec:1},
+"FrodoKEM-640-AES|liboqs|decaps":{m:.6028,md:.5676,sd:.103,ops:1659,t:"KEM",op:"decaps",lib:"liboqs",alg:"FrodoKEM-640-AES",fam:"frodo",sec:1},
+"McEliece348864|pqcrypto|keygen":{m:166.4777,md:156.77,sd:28.3,ops:6,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"McEliece348864",fam:"mceliece",sec:1},
+"McEliece348864|pqcrypto|encaps":{m:.0808,md:.0761,sd:.014,ops:12376,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"McEliece348864",fam:"mceliece",sec:1},
+"McEliece348864|pqcrypto|decaps":{m:20.4896,md:19.2943,sd:3.483,ops:48,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"McEliece348864",fam:"mceliece",sec:1},
+"McEliece348864|pqclean|keygen":{m:128.6968,md:121.176,sd:21.88,ops:7,t:"KEM",op:"keygen",lib:"pqclean",alg:"McEliece348864",fam:"mceliece",sec:1},
+"McEliece348864|pqclean|encaps":{m:.0682,md:.0642,sd:.012,ops:14662,t:"KEM",op:"encaps",lib:"pqclean",alg:"McEliece348864",fam:"mceliece",sec:1},
+"McEliece348864|pqclean|decaps":{m:20.4565,md:19.259,sd:3.476,ops:48,t:"KEM",op:"decaps",lib:"pqclean",alg:"McEliece348864",fam:"mceliece",sec:1},
+"ML-KEM-512|pqcrypto|keygen":{m:.0491,md:.0462,sd:.009,ops:20366,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|pqcrypto|encaps":{m:.0617,md:.0581,sd:.011,ops:16207,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|pqcrypto|decaps":{m:.0764,md:.0719,sd:.013,ops:13089,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-768|pqcrypto|keygen":{m:.0813,md:.0765,sd:.014,ops:12300,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-768|pqcrypto|encaps":{m:.0945,md:.089,sd:.017,ops:10582,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-768|pqcrypto|decaps":{m:.115,md:.1083,sd:.02,ops:8695,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-1024|pqcrypto|keygen":{m:.1259,md:.1186,sd:.022,ops:7943,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"ML-KEM-1024|pqcrypto|encaps":{m:.1399,md:.1317,sd:.024,ops:7148,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"ML-KEM-1024|pqcrypto|decaps":{m:.1612,md:.1518,sd:.028,ops:6203,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"HQC-128|pqcrypto|keygen":{m:2.1358,md:2.0117,sd:.363,ops:468,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"HQC-128",fam:"hqc",sec:1},
+"HQC-128|pqcrypto|encaps":{m:4.2288,md:3.9831,sd:.719,ops:236,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"HQC-128",fam:"hqc",sec:1},
+"HQC-128|pqcrypto|decaps":{m:6.7581,md:6.3647,sd:1.149,ops:148,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"HQC-128",fam:"hqc",sec:1},
+"ML-KEM-512|circl|keygen":{m:.0236,md:.0222,sd:.004,ops:42372,t:"KEM",op:"keygen",lib:"circl",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|circl|encaps":{m:.0106,md:.01,sd:.002,ops:94339,t:"KEM",op:"encaps",lib:"circl",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|circl|decaps":{m:.0146,md:.0138,sd:.003,ops:68493,t:"KEM",op:"decaps",lib:"circl",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-768|circl|keygen":{m:.0394,md:.0371,sd:.007,ops:25380,t:"KEM",op:"keygen",lib:"circl",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-768|circl|encaps":{m:.0129,md:.0122,sd:.002,ops:77519,t:"KEM",op:"encaps",lib:"circl",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-768|circl|decaps":{m:.019,md:.0179,sd:.003,ops:52631,t:"KEM",op:"decaps",lib:"circl",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-1024|circl|keygen":{m:.0585,md:.0551,sd:.01,ops:17094,t:"KEM",op:"keygen",lib:"circl",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"ML-KEM-1024|circl|encaps":{m:.0165,md:.0155,sd:.003,ops:60606,t:"KEM",op:"encaps",lib:"circl",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"ML-KEM-1024|circl|decaps":{m:.0244,md:.023,sd:.004,ops:40983,t:"KEM",op:"decaps",lib:"circl",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"Kyber512|circl|keygen":{m:.0246,md:.0232,sd:.004,ops:40650,t:"KEM",op:"keygen",lib:"circl",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|circl|encaps":{m:.0154,md:.0145,sd:.003,ops:64935,t:"KEM",op:"encaps",lib:"circl",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|circl|decaps":{m:.0151,md:.0142,sd:.003,ops:66225,t:"KEM",op:"decaps",lib:"circl",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|bouncycastle|keygen":{m:1.6442,md:1.548,sd:.28,ops:608,t:"KEM",op:"keygen",lib:"bouncycastle",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|bouncycastle|encaps":{m:2.3667,md:2.229,sd:.402,ops:422,t:"KEM",op:"encaps",lib:"bouncycastle",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|bouncycastle|decaps":{m:.8737,md:.823,sd:.148,ops:1145,t:"KEM",op:"decaps",lib:"bouncycastle",alg:"Kyber512",fam:"mlkem",sec:1},
+"ML-KEM-512|pqclean|keygen":{m:.0443,md:.0417,sd:.008,ops:22573,t:"KEM",op:"keygen",lib:"pqclean",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|pqclean|encaps":{m:.0524,md:.0494,sd:.009,ops:19083,t:"KEM",op:"encaps",lib:"pqclean",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|pqclean|decaps":{m:.0653,md:.0615,sd:.011,ops:15314,t:"KEM",op:"decaps",lib:"pqclean",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-768|pqclean|keygen":{m:.0774,md:.0729,sd:.013,ops:12920,t:"KEM",op:"keygen",lib:"pqclean",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-768|pqclean|encaps":{m:.0858,md:.0808,sd:.015,ops:11655,t:"KEM",op:"encaps",lib:"pqclean",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-768|pqclean|decaps":{m:.1034,md:.0974,sd:.018,ops:9671,t:"KEM",op:"decaps",lib:"pqclean",alg:"ML-KEM-768",fam:"mlkem",sec:3},
+"ML-KEM-1024|pqclean|keygen":{m:.1275,md:.1201,sd:.022,ops:7843,t:"KEM",op:"keygen",lib:"pqclean",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"ML-KEM-1024|pqclean|encaps":{m:.1313,md:.1236,sd:.022,ops:7615,t:"KEM",op:"encaps",lib:"pqclean",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"ML-KEM-1024|pqclean|decaps":{m:.1522,md:.1433,sd:.026,ops:6571,t:"KEM",op:"decaps",lib:"pqclean",alg:"ML-KEM-1024",fam:"mlkem",sec:5},
+"HQC-128|pqclean|keygen":{m:3.6899,md:3.474,sd:.627,ops:271,t:"KEM",op:"keygen",lib:"pqclean",alg:"HQC-128",fam:"hqc",sec:1},
+"HQC-128|pqclean|encaps":{m:4.2994,md:4.049,sd:.731,ops:232,t:"KEM",op:"encaps",lib:"pqclean",alg:"HQC-128",fam:"hqc",sec:1},
+"HQC-128|pqclean|decaps":{m:6.2774,md:5.911,sd:1.067,ops:159,t:"KEM",op:"decaps",lib:"pqclean",alg:"HQC-128",fam:"hqc",sec:1},
+"ML-KEM-512|oqsprovider|keygen":{m:.1273,md:.1199,sd:.022,ops:7855,t:"KEM",op:"keygen",lib:"oqsprovider",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|oqsprovider|encaps":{m:.0224,md:.0211,sd:.004,ops:44642,t:"KEM",op:"encaps",lib:"oqsprovider",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"ML-KEM-512|oqsprovider|decaps":{m:.0144,md:.0136,sd:.003,ops:69444,t:"KEM",op:"decaps",lib:"oqsprovider",alg:"ML-KEM-512",fam:"mlkem",sec:1},
+"Kyber512|'kyber-ref'|keygen":{m:.0475,md:.0447,sd:.008,ops:21052,t:"KEM",op:"keygen",lib:"kyber-ref",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|'kyber-ref'|encaps":{m:.0592,md:.0557,sd:.01,ops:16891,t:"KEM",op:"encaps",lib:"kyber-ref",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber512|'kyber-ref'|decaps":{m:.0753,md:.0709,sd:.013,ops:13280,t:"KEM",op:"decaps",lib:"kyber-ref",alg:"Kyber512",fam:"mlkem",sec:1},
+"Kyber768|kyber-ref|keygen":{m:.0768,md:.0723,sd:.013,ops:13020,t:"KEM",op:"keygen",lib:"kyber-ref",alg:"Kyber768",fam:"mlkem",sec:3},
+"Kyber768|kyber-ref|encaps":{m:.0896,md:.0844,sd:.015,ops:11160,t:"KEM",op:"encaps",lib:"kyber-ref",alg:"Kyber768",fam:"mlkem",sec:3},
+"Kyber768|kyber-ref|decaps":{m:.1089,md:.1026,sd:.018,ops:9183,t:"KEM",op:"decaps",lib:"kyber-ref",alg:"Kyber768",fam:"mlkem",sec:3},
+"Kyber1024|kyber-ref|keygen":{m:.1223,md:.1152,sd:.02,ops:8176,t:"KEM",op:"keygen",lib:"kyber-ref",alg:"Kyber1024",fam:"mlkem",sec:5},
+"Kyber1024|kyber-ref|encaps":{m:.1378,md:.1298,sd:.023,ops:7257,t:"KEM",op:"encaps",lib:"kyber-ref",alg:"Kyber1024",fam:"mlkem",sec:5},
+"Kyber1024|kyber-ref|decaps":{m:.1628,md:.1533,sd:.027,ops:6143,t:"KEM",op:"decaps",lib:"kyber-ref",alg:"Kyber1024",fam:"mlkem",sec:5},
+// SIGNATURES
+"ML-DSA-44|liboqs|keygen":{m:.0415,md:.0391,sd:.007,ops:24096,t:"SIG",op:"keygen",lib:"liboqs",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-44|liboqs|sign":{m:.1236,md:.1164,sd:.021,ops:8090,t:"SIG",op:"sign",lib:"liboqs",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-44|liboqs|verify":{m:.0365,md:.0344,sd:.006,ops:27397,t:"SIG",op:"verify",lib:"liboqs",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-65|liboqs|keygen":{m:.0613,md:.0577,sd:.01,ops:16313,t:"SIG",op:"keygen",lib:"liboqs",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-65|liboqs|sign":{m:.1628,md:.1533,sd:.028,ops:6143,t:"SIG",op:"sign",lib:"liboqs",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-65|liboqs|verify":{m:.0569,md:.0536,sd:.01,ops:17574,t:"SIG",op:"verify",lib:"liboqs",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-87|liboqs|keygen":{m:.0997,md:.0939,sd:.017,ops:10030,t:"SIG",op:"keygen",lib:"liboqs",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"ML-DSA-87|liboqs|sign":{m:.1967,md:.1853,sd:.033,ops:5084,t:"SIG",op:"sign",lib:"liboqs",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"ML-DSA-87|liboqs|verify":{m:.0871,md:.082,sd:.015,ops:11481,t:"SIG",op:"verify",lib:"liboqs",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"Falcon-512|liboqs|keygen":{m:7.7906,md:7.336,sd:1.324,ops:128,t:"SIG",op:"keygen",lib:"liboqs",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|liboqs|sign":{m:.3145,md:.2961,sd:.053,ops:3180,t:"SIG",op:"sign",lib:"liboqs",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|liboqs|verify":{m:.0591,md:.0557,sd:.01,ops:16920,t:"SIG",op:"verify",lib:"liboqs",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-1024|liboqs|keygen":{m:23.0568,md:21.713,sd:3.92,ops:43,t:"SIG",op:"keygen",lib:"liboqs",alg:"Falcon-1024",fam:"falcon",sec:5},
+"Falcon-1024|liboqs|sign":{m:.6031,md:.5679,sd:.103,ops:1658,t:"SIG",op:"sign",lib:"liboqs",alg:"Falcon-1024",fam:"falcon",sec:5},
+"Falcon-1024|liboqs|verify":{m:.1184,md:.1115,sd:.02,ops:8445,t:"SIG",op:"verify",lib:"liboqs",alg:"Falcon-1024",fam:"falcon",sec:5},
+"MAYO-1|liboqs|keygen":{m:.0866,md:.0815,sd:.015,ops:11547,t:"SIG",op:"keygen",lib:"liboqs",alg:"MAYO-1",fam:"mayo",sec:1},
+"MAYO-1|liboqs|sign":{m:.2024,md:.1906,sd:.034,ops:4940,t:"SIG",op:"sign",lib:"liboqs",alg:"MAYO-1",fam:"mayo",sec:1},
+"MAYO-1|liboqs|verify":{m:.0991,md:.0933,sd:.017,ops:10091,t:"SIG",op:"verify",lib:"liboqs",alg:"MAYO-1",fam:"mayo",sec:1},
+"MAYO-2|liboqs|keygen":{m:.0592,md:.0557,sd:.01,ops:16891,t:"SIG",op:"keygen",lib:"liboqs",alg:"MAYO-2",fam:"mayo",sec:1},
+"MAYO-2|liboqs|sign":{m:.1167,md:.1099,sd:.02,ops:8568,t:"SIG",op:"sign",lib:"liboqs",alg:"MAYO-2",fam:"mayo",sec:1},
+"MAYO-2|liboqs|verify":{m:.0426,md:.0401,sd:.007,ops:23474,t:"SIG",op:"verify",lib:"liboqs",alg:"MAYO-2",fam:"mayo",sec:1},
+"ML-DSA-44|pqcrypto|keygen":{m:.1377,md:.1297,sd:.023,ops:7263,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-44|pqcrypto|sign":{m:.5548,md:.5224,sd:.094,ops:1802,t:"SIG",op:"sign",lib:"pqcrypto",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-44|pqcrypto|verify":{m:.191,md:.1799,sd:.032,ops:5235,t:"SIG",op:"verify",lib:"pqcrypto",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-65|pqcrypto|keygen":{m:.2894,md:.2725,sd:.049,ops:3455,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-65|pqcrypto|sign":{m:.7614,md:.7169,sd:.129,ops:1313,t:"SIG",op:"sign",lib:"pqcrypto",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-65|pqcrypto|verify":{m:.2871,md:.2704,sd:.049,ops:3483,t:"SIG",op:"verify",lib:"pqcrypto",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-87|pqcrypto|keygen":{m:.4577,md:.4309,sd:.078,ops:2185,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"ML-DSA-87|pqcrypto|sign":{m:1.3753,md:1.2949,sd:.234,ops:727,t:"SIG",op:"sign",lib:"pqcrypto",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"ML-DSA-87|pqcrypto|verify":{m:.4614,md:.4345,sd:.078,ops:2167,t:"SIG",op:"verify",lib:"pqcrypto",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"Falcon-512|pqcrypto|keygen":{m:19.9566,md:18.794,sd:3.393,ops:50,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|pqcrypto|sign":{m:5.2794,md:4.972,sd:.897,ops:189,t:"SIG",op:"sign",lib:"pqcrypto",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|pqcrypto|verify":{m:.059,md:.0556,sd:.01,ops:16949,t:"SIG",op:"verify",lib:"pqcrypto",alg:"Falcon-512",fam:"falcon",sec:1},
+"SPHINCS-sha2-128f|pqcrypto|keygen":{m:1.9474,md:1.834,sd:.331,ops:513,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128f|pqcrypto|sign":{m:49.0837,md:46.239,sd:8.344,ops:20,t:"SIG",op:"sign",lib:"pqcrypto",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128f|pqcrypto|verify":{m:2.5311,md:2.384,sd:.43,ops:395,t:"SIG",op:"verify",lib:"pqcrypto",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128s|pqcrypto|keygen":{m:115.0097,md:108.309,sd:19.55,ops:8.7,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"SPHINCS-sha2-128s",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128s|pqcrypto|sign":{m:875.8133,md:824.966,sd:148.89,ops:1.1,t:"SIG",op:"sign",lib:"pqcrypto",alg:"SPHINCS-sha2-128s",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128s|pqcrypto|verify":{m:.8697,md:.819,sd:.148,ops:1150,t:"SIG",op:"verify",lib:"pqcrypto",alg:"SPHINCS-sha2-128s",fam:"sphincs",sec:1},
+"Falcon-512|bouncycastle|keygen":{m:47.4257,md:44.661,sd:8.063,ops:21,t:"SIG",op:"keygen",lib:"bouncycastle",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|bouncycastle|sign":{m:11.2026,md:10.55,sd:1.904,ops:89,t:"SIG",op:"sign",lib:"bouncycastle",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|bouncycastle|verify":{m:.6953,md:.655,sd:.118,ops:1438,t:"SIG",op:"verify",lib:"bouncycastle",alg:"Falcon-512",fam:"falcon",sec:1},
+"Dilithium2|bouncycastle|keygen":{m:2.6211,md:2.468,sd:.445,ops:381,t:"SIG",op:"keygen",lib:"bouncycastle",alg:"Dilithium2",fam:"mldsa",sec:2},
+"Dilithium2|bouncycastle|sign":{m:3.774,md:3.554,sd:.641,ops:264,t:"SIG",op:"sign",lib:"bouncycastle",alg:"Dilithium2",fam:"mldsa",sec:2},
+"Dilithium2|bouncycastle|verify":{m:.768,md:.723,sd:.13,ops:1302,t:"SIG",op:"verify",lib:"bouncycastle",alg:"Dilithium2",fam:"mldsa",sec:2},
+"SPHINCS-sha2-128f|bouncycastle|keygen":{m:11.2406,md:10.585,sd:1.91,ops:89,t:"SIG",op:"keygen",lib:"bouncycastle",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128f|bouncycastle|sign":{m:74.4346,md:70.089,sd:12.654,ops:13,t:"SIG",op:"sign",lib:"bouncycastle",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128f|bouncycastle|verify":{m:5.3435,md:5.033,sd:.908,ops:187,t:"SIG",op:"verify",lib:"bouncycastle",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"ML-DSA-44|pqclean|keygen":{m:.1205,md:.1135,sd:.02,ops:8298,t:"SIG",op:"keygen",lib:"pqclean",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-44|pqclean|sign":{m:.4914,md:.4627,sd:.083,ops:2035,t:"SIG",op:"sign",lib:"pqclean",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-44|pqclean|verify":{m:.1297,md:.1221,sd:.022,ops:7710,t:"SIG",op:"verify",lib:"pqclean",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-65|pqclean|keygen":{m:.2176,md:.2049,sd:.037,ops:4595,t:"SIG",op:"keygen",lib:"pqclean",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-65|pqclean|sign":{m:.8032,md:.7561,sd:.137,ops:1245,t:"SIG",op:"sign",lib:"pqclean",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-65|pqclean|verify":{m:.209,md:.1968,sd:.036,ops:4784,t:"SIG",op:"verify",lib:"pqclean",alg:"ML-DSA-65",fam:"mldsa",sec:3},
+"ML-DSA-87|pqclean|keygen":{m:.3852,md:.3627,sd:.065,ops:2596,t:"SIG",op:"keygen",lib:"pqclean",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"ML-DSA-87|pqclean|sign":{m:1.0914,md:1.028,sd:.186,ops:916,t:"SIG",op:"sign",lib:"pqclean",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"ML-DSA-87|pqclean|verify":{m:.3914,md:.3686,sd:.067,ops:2556,t:"SIG",op:"verify",lib:"pqclean",alg:"ML-DSA-87",fam:"mldsa",sec:5},
+"Falcon-512|pqclean|keygen":{m:17.8039,md:16.762,sd:3.025,ops:56,t:"SIG",op:"keygen",lib:"pqclean",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|pqclean|sign":{m:5.4585,md:5.141,sd:.928,ops:183,t:"SIG",op:"sign",lib:"pqclean",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|pqclean|verify":{m:.0626,md:.059,sd:.011,ops:15974,t:"SIG",op:"verify",lib:"pqclean",alg:"Falcon-512",fam:"falcon",sec:1},
+"SPHINCS-sha2-128f|pqclean|keygen":{m:1.7678,md:1.664,sd:.3,ops:565,t:"SIG",op:"keygen",lib:"pqclean",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128f|pqclean|sign":{m:41.3891,md:38.967,sd:7.03,ops:24,t:"SIG",op:"sign",lib:"pqclean",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128f|pqclean|verify":{m:2.4231,md:2.282,sd:.412,ops:412,t:"SIG",op:"verify",lib:"pqclean",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"ML-DSA-44|oqsprovider|keygen":{m:.05,md:.0471,sd:.009,ops:20000,t:"SIG",op:"keygen",lib:"oqsprovider",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-44|oqsprovider|sign":{m:.16,md:.1507,sd:.027,ops:6250,t:"SIG",op:"sign",lib:"oqsprovider",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"ML-DSA-44|oqsprovider|verify":{m:.0412,md:.0388,sd:.007,ops:24271,t:"SIG",op:"verify",lib:"oqsprovider",alg:"ML-DSA-44",fam:"mldsa",sec:2},
+"Falcon-512|oqsprovider|keygen":{m:7.8132,md:7.358,sd:1.328,ops:128,t:"SIG",op:"keygen",lib:"oqsprovider",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|oqsprovider|sign":{m:.3248,md:.3059,sd:.055,ops:3079,t:"SIG",op:"sign",lib:"oqsprovider",alg:"Falcon-512",fam:"falcon",sec:1},
+"Falcon-512|oqsprovider|verify":{m:.061,md:.0574,sd:.01,ops:16393,t:"SIG",op:"verify",lib:"oqsprovider",alg:"Falcon-512",fam:"falcon",sec:1},
+"MAYO-1|oqsprovider|keygen":{m:.1031,md:.0971,sd:.018,ops:9699,t:"SIG",op:"keygen",lib:"oqsprovider",alg:"MAYO-1",fam:"mayo",sec:1},
+"MAYO-1|oqsprovider|sign":{m:.2486,md:.2341,sd:.042,ops:4022,t:"SIG",op:"sign",lib:"oqsprovider",alg:"MAYO-1",fam:"mayo",sec:1},
+"MAYO-1|oqsprovider|verify":{m:.1185,md:.1116,sd:.02,ops:8438,t:"SIG",op:"verify",lib:"oqsprovider",alg:"MAYO-1",fam:"mayo",sec:1},
+"Dilithium2|dilithium-ref|keygen":{m:.1168,md:.11,sd:.02,ops:8561,t:"SIG",op:"keygen",lib:"dilithium-ref",alg:"Dilithium2",fam:"mldsa",sec:2},
+"Dilithium2|dilithium-ref|sign":{m:.519,md:.4889,sd:.088,ops:1926,t:"SIG",op:"sign",lib:"dilithium-ref",alg:"Dilithium2",fam:"mldsa",sec:2},
+"Dilithium2|dilithium-ref|verify":{m:.1317,md:.124,sd:.022,ops:7593,t:"SIG",op:"verify",lib:"dilithium-ref",alg:"Dilithium2",fam:"mldsa",sec:2},
+"Dilithium3|dilithium-ref|keygen":{m:.2086,md:.1965,sd:.035,ops:4793,t:"SIG",op:"keygen",lib:"dilithium-ref",alg:"Dilithium3",fam:"mldsa",sec:3},
+"Dilithium3|dilithium-ref|sign":{m:.8122,md:.7651,sd:.138,ops:1231,t:"SIG",op:"sign",lib:"dilithium-ref",alg:"Dilithium3",fam:"mldsa",sec:3},
+"Dilithium3|dilithium-ref|verify":{m:.2082,md:.1961,sd:.035,ops:4803,t:"SIG",op:"verify",lib:"dilithium-ref",alg:"Dilithium3",fam:"mldsa",sec:3},
+"Dilithium5|dilithium-ref|keygen":{m:.3127,md:.2946,sd:.053,ops:3197,t:"SIG",op:"keygen",lib:"dilithium-ref",alg:"Dilithium5",fam:"mldsa",sec:5},
+"Dilithium5|dilithium-ref|sign":{m:1.1949,md:1.1254,sd:.203,ops:837,t:"SIG",op:"sign",lib:"dilithium-ref",alg:"Dilithium5",fam:"mldsa",sec:5},
+"Dilithium5|dilithium-ref|verify":{m:.3328,md:.3135,sd:.057,ops:3004,t:"SIG",op:"verify",lib:"dilithium-ref",alg:"Dilithium5",fam:"mldsa",sec:5},
+"SPHINCS-sha2-128f|sphincs-ref|keygen":{m:1.6835,md:1.585,sd:.286,ops:594,t:"SIG",op:"keygen",lib:"sphincs-ref",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128f|sphincs-ref|sign":{m:39.4451,md:37.139,sd:6.7,ops:25,t:"SIG",op:"sign",lib:"sphincs-ref",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128f|sphincs-ref|verify":{m:2.3518,md:2.215,sd:.4,ops:425,t:"SIG",op:"verify",lib:"sphincs-ref",alg:"SPHINCS-sha2-128f",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128s|sphincs-ref|keygen":{m:213.8778,md:201.447,sd:36.36,ops:4.7,t:"SIG",op:"keygen",lib:"sphincs-ref",alg:"SPHINCS-sha2-128s",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128s|sphincs-ref|sign":{m:1604.2468,md:1510.793,sd:272.72,ops:.62,t:"SIG",op:"sign",lib:"sphincs-ref",alg:"SPHINCS-sha2-128s",fam:"sphincs",sec:1},
+"SPHINCS-sha2-128s|sphincs-ref|verify":{m:1.6032,md:1.51,sd:.273,ops:624,t:"SIG",op:"verify",lib:"sphincs-ref",alg:"SPHINCS-sha2-128s",fam:"sphincs",sec:1},
+"SPHINCS-sha2-256f|sphincs-ref|keygen":{m:6.4922,md:6.115,sd:1.103,ops:154,t:"SIG",op:"keygen",lib:"sphincs-ref",alg:"SPHINCS-sha2-256f",fam:"sphincs",sec:3},
+"SPHINCS-sha2-256f|sphincs-ref|sign":{m:132.8447,md:125.116,sd:22.58,ops:7.5,t:"SIG",op:"sign",lib:"sphincs-ref",alg:"SPHINCS-sha2-256f",fam:"sphincs",sec:3},
+"SPHINCS-sha2-256f|sphincs-ref|verify":{m:3.4938,md:3.291,sd:.594,ops:286,t:"SIG",op:"verify",lib:"sphincs-ref",alg:"SPHINCS-sha2-256f",fam:"sphincs",sec:3},
+"SPHINCS-shake-128f|sphincs-ref|keygen":{m:2.7707,md:2.609,sd:.471,ops:361,t:"SIG",op:"keygen",lib:"sphincs-ref",alg:"SPHINCS-shake-128f",fam:"sphincs",sec:1},
+"SPHINCS-shake-128f|sphincs-ref|sign":{m:65.0999,md:61.319,sd:11.07,ops:15,t:"SIG",op:"sign",lib:"sphincs-ref",alg:"SPHINCS-shake-128f",fam:"sphincs",sec:1},
+"SPHINCS-shake-128f|sphincs-ref|verify":{m:3.8631,md:3.639,sd:.657,ops:259,t:"SIG",op:"verify",lib:"sphincs-ref",alg:"SPHINCS-shake-128f",fam:"sphincs",sec:1},
+"Dilithium2|wolfssl|keygen":{m:.081,md:.0763,sd:.014,ops:12345,t:"SIG",op:"keygen",lib:"wolfssl",alg:"Dilithium2",fam:"mldsa",sec:2},
+"Dilithium3|wolfssl|keygen":{m:.1496,md:.1409,sd:.025,ops:6684,t:"SIG",op:"keygen",lib:"wolfssl",alg:"Dilithium3",fam:"mldsa",sec:3},
+"Dilithium5|wolfssl|keygen":{m:.2227,md:.2097,sd:.038,ops:4490,t:"SIG",op:"keygen",lib:"wolfssl",alg:"Dilithium5",fam:"mldsa",sec:5},
+};
+
+// ── Index ──────────────────────────────────────────────────────────────────
+const IDX = {};
+for (const [k, v] of Object.entries(D)) {
+  const [alg, lib, op] = k.split('|').map(s => s.replace(/^'|'$/g,''));
+  v.lib = v.lib.replace(/^'|'$/g,'');
+  if (!IDX[alg]) IDX[alg] = {};
+  if (!IDX[alg][op]) IDX[alg][op] = {};
+  IDX[alg][op][v.lib] = v.m;
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const fms = v => !v || v < .0001 ? '—' : v < .01 ? v.toFixed(4) : v < 1 ? v.toFixed(3) : v < 10 ? v.toFixed(2) : v.toFixed(1);
+const fops = v => !v || v < .01 ? '—' : v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(1)+'k' : v.toFixed(1);
+const fastest = o => {
+  if (!o) return null;
+  const e = Object.entries(o).filter(([,v]) => v > .0001);
+  return e.length ? e.reduce((a,b) => a[1]<b[1]?a:b)[0] : null;
+};
+
+// Chart.js defaults
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.color = '#8890aa';
+
+const mkChart = (id, type, labels, datasets, extra={}) =>
+  new Chart(document.getElementById(id), {
+    type,
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#8890aa', font: { size: 11 }, boxWidth: 10, padding: 12 } },
+        ...(extra.plugins || {})
+      },
+      scales: extra.scales || {
+        x: { ticks: { color: '#8890aa', font: { size: 11 }, maxRotation: 38 }, grid: { color: '#f1f3f8' } },
+        y: { ticks: { color: '#8890aa', font: { size: 11 } }, grid: { color: '#f1f3f8' } }
+      },
+      ...(extra.other || {})
+    }
+  });
+
+const logScale = {
+  x: { ticks: { color: '#8890aa', font: { size: 11 }, maxRotation: 38 }, grid: { color: '#f1f3f8' } },
+  y: { type: 'logarithmic', ticks: { color: '#8890aa', font: { size: 11 }, callback: v => fms(v)+'ms' }, grid: { color: '#f1f3f8' } }
+};
+const linScale = {
+  x: { ticks: { color: '#8890aa', font: { size: 11 }, maxRotation: 38 }, grid: { color: '#f1f3f8' } },
+  y: { ticks: { color: '#8890aa', font: { size: 11 }, callback: v => fms(v)+'ms' }, grid: { color: '#f1f3f8' } }
+};
+
+// ── Tab system ────────────────────────────────────────────────────────────────
+const built = {};
+function showTab(id) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+  document.getElementById('pane-' + id).classList.add('active');
+  const tabs = ['overview','kem','sig','heatmap','security','libs','table'];
+  document.querySelectorAll('.ntab')[tabs.indexOf(id)].classList.add('active');
+  if (!built[id]) { built[id] = true; ({ overview:buildOverview, kem:buildKEM, sig:buildSig, heatmap:buildHeatmap, security:buildSecurity, libs:buildLibs, table:buildTable })[id](); }
+}
+
+// ══ OVERVIEW ══════════════════════════════════════════════════════════════════
+function buildOverview() {
+  // Metrics
+  const mData = [
+    { icon:'⚡', label:'Fastest KEM encaps', val:'0.011 ms', sub:'CIRCL · ML-KEM-512 · 94k ops/sec', color:'#2563eb' },
+    { icon:'✍️', label:'Fastest Sig sign', val:'0.117 ms', sub:'liboqs · MAYO-2 · 8.6k ops/sec', color:'#16a34a' },
+    { icon:'📏', label:'Smallest sig size', val:'666 bytes', sub:'Falcon-512 signature', color:'#7c3aed' },
+    { icon:'🏆', label:'Most algorithms', val:'247 total', sub:'liboqs covers everything', color:'#d97706' },
+    { icon:'🚀', label:'Fastest keygen', val:'0.015 ms', sub:'liboqs · ML-KEM-512 · 68k ops/sec', color:'#0891b2' },
+    { icon:'🐢', label:'Slowest (McEliece)', val:'166 ms', sub:'keygen only · pqcrypto library', color:'#dc2626' },
+  ];
+  document.getElementById('metrics').innerHTML = mData.map(m => `
+    <div class="metric" style="border-top:3px solid ${m.color};">
+      <div class="metric-icon">${m.icon}</div>
+      <div class="metric-label">${m.label}</div>
+      <div class="metric-val" style="color:${m.color};font-size:18px;">${m.val}</div>
+      <div class="metric-sub">${m.sub}</div>
+    </div>`).join('');
+
+  // KEM chart
+  const kA = ['ML-KEM-512','ML-KEM-768','ML-KEM-1024','Kyber512','NTRU-HPS-2048-509','BIKE-L1','HQC-128','FrodoKEM-640-AES','McEliece348864'];
+  const kD = kA.map(a => { const d = IDX[a]?.keygen; const f = fastest(d); return { ms: d?.[f]||null, lib: f }; });
+  mkChart('ovKem','bar', kA, [{
+    data: kD.map(d => d.ms),
+    backgroundColor: kD.map(d => d.lib ? LC[d.lib]+'cc' : '#ccc'),
+    borderRadius: 5, borderSkipped: false
+  }], {
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${fms(ctx.raw)}ms · ${LN[kD[ctx.dataIndex].lib]||''}` } } },
+    scales: logScale
+  });
+
+  // Sig chart
+  const sA = ['ML-DSA-44','ML-DSA-65','ML-DSA-87','Falcon-512','Falcon-1024','SPHINCS-sha2-128f','SPHINCS-sha2-128s','MAYO-1','MAYO-2'];
+  const sD = sA.map(a => { const d = IDX[a]?.sign; const f = fastest(d); return { ms: d?.[f]||null, lib: f }; });
+  mkChart('ovSig','bar', sA, [{
+    data: sD.map(d => d.ms),
+    backgroundColor: sD.map(d => d.lib ? LC[d.lib]+'cc' : '#ccc'),
+    borderRadius: 5, borderSkipped: false
+  }], {
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${fms(ctx.raw)}ms · ${LN[sD[ctx.dataIndex].lib]||''}` } } },
+    scales: logScale
+  });
+
+  // Tally
+  const wins = {}; let tot = 0;
+  for (const [,ops] of Object.entries(IDX))
+    for (const [,libs] of Object.entries(ops)) {
+      const f = fastest(libs);
+      if (f && Object.keys(libs).length >= 2) { wins[f] = (wins[f]||0)+1; tot++; }
+    }
+  const sorted = Object.entries(wins).sort((a,b) => b[1]-a[1]);
+  const maxW = sorted[0]?.[1]||1;
+  document.getElementById('tally').innerHTML = sorted.map(([lib,w]) => `
+    <div class="tally-row">
+      <div class="tally-lib" style="color:${LC[lib]}">${LN[lib]}</div>
+      <div class="tally-bar-bg"><div class="tally-bar" style="width:${w/maxW*100}%;background:${LC[lib]};"></div></div>
+      <div class="tally-right"><span class="tally-n">${w}</span><span class="tally-p">&nbsp;wins (${Math.round(w/tot*100)}%)</span></div>
+    </div>`).join('');
+
+  // Library summary
+  const libInfo = [
+    { lib:'liboqs', lang:'C + Python', note:'247 algorithms', tag:'Most complete' },
+    { lib:'pqcrypto', lang:'Python', note:'21 algorithms', tag:'Easiest to use' },
+    { lib:'circl', lang:'Go', note:'6 algorithms', tag:'Fastest encaps' },
+    { lib:'bouncycastle', lang:'Java', note:'11 algorithms', tag:'FIPS certified' },
+    { lib:'pqclean', lang:'C reference', note:'35 algorithms', tag:'Most auditable' },
+    { lib:'oqsprovider', lang:'C / OpenSSL', note:'18 algorithms', tag:'TLS integration' },
+    { lib:'kyber-ref', lang:'C reference', note:'3 algorithms', tag:'Official Kyber' },
+    { lib:'dilithium-ref', lang:'C reference', note:'3 algorithms', tag:'Official Dilithium' },
+    { lib:'sphincs-ref', lang:'C reference', note:'4 algorithms', tag:'Official SPHINCS+' },
+    { lib:'wolfssl', lang:'C embedded', note:'3 algorithms', tag:'IoT / FIPS 140-3' },
+  ];
+  document.getElementById('libsummary').innerHTML = libInfo.map(l => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:white;border:1px solid var(--border);border-left:4px solid ${LC[l.lib]};border-radius:0 var(--r) var(--r) 0;margin-bottom:6px;box-shadow:var(--shadow);">
+      <div style="flex:1;">
+        <span style="font-weight:600;color:${LC[l.lib]};">${LN[l.lib]}</span>
+        <span style="color:var(--text3);font-size:12px;margin-left:8px;">${l.lang}</span>
+      </div>
+      <span style="font-size:12px;color:var(--text2);">${l.note}</span>
+      <span style="font-size:11px;background:var(--bg3);color:var(--text3);padding:2px 8px;border-radius:20px;">${l.tag}</span>
+    </div>`).join('');
+}
+
+// ══ KEM ═══════════════════════════════════════════════════════════════════════
+let kemOp='keygen', kemScale='logarithmic', kemFam='all', kemChart, kemLibs=new Set(LIBS);
+const KEM_FAMS = {
+  all:['ML-KEM-512','ML-KEM-768','ML-KEM-1024','Kyber512','Kyber768','Kyber1024','NTRU-HPS-2048-509','BIKE-L1','BIKE-L3','HQC-128','FrodoKEM-640-AES','McEliece348864'],
+  mlkem:['ML-KEM-512','ML-KEM-768','ML-KEM-1024','Kyber512','Kyber768','Kyber1024'],
+  ntru:['NTRU-HPS-2048-509','NTRU-HPS-2048-677'],
+  bike:['BIKE-L1','BIKE-L3'],
+  hqc:['HQC-128','HQC-192'],
+  frodo:['FrodoKEM-640-AES'],
+  mceliece:['McEliece348864']
+};
+
+function buildKEM() {
+  document.getElementById('kemLibBtns').innerHTML = LIBS.map(lib => `
+    <button class="btn active" id="klb-${lib}" style="border-color:${LC[lib]}44;" onclick="toggleKemLib('${lib}',this)">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${LC[lib]};margin-right:5px;"></span>${LN[lib]}
+    </button>`).join('');
+  renderKemMain();
+
+  // Round trip chart
+  const rtA = ['ML-KEM-512','Kyber512','NTRU-HPS-2048-509','BIKE-L1','HQC-128','FrodoKEM-640-AES'];
+  mkChart('kemRT','bar', rtA,
+    LIBS.map(lib => ({
+      label: LN[lib],
+      data: rtA.map(a => { const kg=IDX[a]?.keygen?.[lib]||0, en=IDX[a]?.encaps?.[lib]||0, de=IDX[a]?.decaps?.[lib]||0; return kg+en+de||null; }),
+      backgroundColor: LC[lib]+'88', borderRadius: 4, borderSkipped: false
+    })).filter(d => d.data.some(v=>v)),
+    { scales: { x: { ticks:{color:'#8890aa',font:{size:10},maxRotation:30}, grid:{color:'#f1f3f8'} }, y: { ticks:{color:'#8890aa',font:{size:10},callback:v=>fms(v)+'ms'}, grid:{color:'#f1f3f8'} } } }
+  );
+
+  // PK + CT sizes
+  const pkMap = {'ML-KEM-512':800,'ML-KEM-768':1184,'ML-KEM-1024':1568,'Kyber512':800,'NTRU-HPS-2048-509':699,'BIKE-L1':1541,'HQC-128':2249,'McEliece348864':261120,'FrodoKEM-640-AES':9616};
+  const ctMap = {'ML-KEM-512':768,'ML-KEM-768':1088,'ML-KEM-1024':1568,'Kyber512':768,'NTRU-HPS-2048-509':699,'BIKE-L1':1573,'HQC-128':4497,'McEliece348864':128,'FrodoKEM-640-AES':9720};
+  const szA = Object.keys(pkMap);
+  const szScale = { x:{ticks:{color:'#8890aa',font:{size:9},maxRotation:35},grid:{color:'#f1f3f8'}}, y:{type:'logarithmic',ticks:{color:'#8890aa',font:{size:10},callback:v=>v>=1024?(v/1024).toFixed(0)+'KB':v+'B'},grid:{color:'#f1f3f8'}} };
+  mkChart('kemPK','bar',szA,[{data:szA.map(a=>pkMap[a]||0),backgroundColor:'#2563eb99',borderRadius:4,borderSkipped:false}],{plugins:{legend:{display:false}},scales:szScale});
+  mkChart('kemCT','bar',szA,[{data:szA.map(a=>ctMap[a]||0),backgroundColor:'#16a34a99',borderRadius:4,borderSkipped:false}],{plugins:{legend:{display:false}},scales:szScale});
+}
+
+function toggleKemLib(lib, btn) {
+  if (kemLibs.has(lib)) { if (kemLibs.size > 1) { kemLibs.delete(lib); btn.classList.remove('active'); btn.style.opacity='.5'; } }
+  else { kemLibs.add(lib); btn.classList.add('active'); btn.style.opacity='1'; }
+  renderKemMain();
+}
+
+function renderKemMain() {
+  const algs = KEM_FAMS[kemFam] || KEM_FAMS.all;
+  const ds = [...kemLibs].map(lib => ({
+    label: LN[lib],
+    data: algs.map(a => IDX[a]?.[kemOp]?.[lib] || null),
+    backgroundColor: LC[lib]+'cc', borderRadius: 4, borderSkipped: false
+  })).filter(d => d.data.some(v=>v));
+  if (kemChart) kemChart.destroy();
+  kemChart = mkChart('kemMain','bar', algs, ds, { scales: kemScale==='logarithmic'?logScale:linScale });
+  document.getElementById('kemChartTitle').textContent = `KEM ${kemOp.charAt(0).toUpperCase()+kemOp.slice(1)} — ${kemFam==='all'?'All Algorithms':kemFam.toUpperCase()}`;
+}
+function setKemOp(op,btn){kemOp=op;document.querySelectorAll('#pane-kem .ctrl .btn').forEach(b=>{if(['Keygen','Encaps','Decaps'].includes(b.textContent.trim()))b.classList.remove('active');});btn.classList.add('active');renderKemMain();}
+function setKemScale(s,btn){kemScale=s;document.querySelectorAll('#pane-kem .ctrl .btn').forEach(b=>{if(b.textContent.includes('Log')||b.textContent.includes('Linear'))b.classList.remove('active');});btn.classList.add('active');renderKemMain();}
+function setKemFam(v){kemFam=v;renderKemMain();}
+
+// ══ SIG ═══════════════════════════════════════════════════════════════════════
+let sigOp='sign', sigScale='logarithmic', sigFam='all', sigChart;
+const SIG_FAMS = {
+  all:['ML-DSA-44','ML-DSA-65','ML-DSA-87','Dilithium2','Dilithium3','Dilithium5','Falcon-512','Falcon-1024','SPHINCS-sha2-128f','SPHINCS-sha2-128s','SPHINCS-sha2-256f','SPHINCS-shake-128f','MAYO-1','MAYO-2'],
+  mldsa:['ML-DSA-44','ML-DSA-65','ML-DSA-87','Dilithium2','Dilithium3','Dilithium5'],
+  falcon:['Falcon-512','Falcon-1024'],
+  sphincs:['SPHINCS-sha2-128f','SPHINCS-sha2-128s','SPHINCS-sha2-256f','SPHINCS-shake-128f'],
+  mayo:['MAYO-1','MAYO-2']
+};
+
+function buildSig() {
+  renderSigMain();
+  const tA = ['ML-DSA-44','Dilithium2','Falcon-512','SPHINCS-sha2-128f','MAYO-1','MAYO-2'];
+  mkChart('sigTotal','bar',tA,
+    LIBS.map(lib=>({label:LN[lib],data:tA.map(a=>{const sg=IDX[a]?.sign?.[lib]||0,vf=IDX[a]?.verify?.[lib]||0;return sg+vf||null;}),backgroundColor:LC[lib]+'88',borderRadius:4,borderSkipped:false})).filter(d=>d.data.some(v=>v)),
+    {scales:{x:{ticks:{color:'#8890aa',font:{size:10},maxRotation:30},grid:{color:'#f1f3f8'}},y:{ticks:{color:'#8890aa',font:{size:10},callback:v=>fms(v)+'ms'},grid:{color:'#f1f3f8'}}}}
+  );
+  const pkS={'ML-DSA-44':1312,'ML-DSA-65':1952,'ML-DSA-87':2592,'Dilithium2':1312,'Falcon-512':897,'Falcon-1024':1793,'SPHINCS-sha2-128f':32,'MAYO-1':1168,'MAYO-2':5488};
+  const szS={'ML-DSA-44':2420,'ML-DSA-65':3293,'ML-DSA-87':4595,'Dilithium2':2420,'Falcon-512':666,'Falcon-1024':1280,'SPHINCS-sha2-128f':17088,'MAYO-1':321,'MAYO-2':180};
+  const szA=Object.keys(pkS);
+  const szSc={x:{ticks:{color:'#8890aa',font:{size:9},maxRotation:35},grid:{color:'#f1f3f8'}},y:{type:'logarithmic',ticks:{color:'#8890aa',font:{size:10},callback:v=>v>=1024?(v/1024).toFixed(0)+'KB':v+'B'},grid:{color:'#f1f3f8'}}};
+  mkChart('sigPK','bar',szA,[{data:szA.map(a=>pkS[a]||0),backgroundColor:'#7c3aed99',borderRadius:4,borderSkipped:false}],{plugins:{legend:{display:false}},scales:szSc});
+  mkChart('sigSZ','bar',szA,[{data:szA.map(a=>szS[a]||0),backgroundColor:'#0891b299',borderRadius:4,borderSkipped:false}],{plugins:{legend:{display:false}},scales:szSc});
+}
+
+function renderSigMain() {
+  const algs = SIG_FAMS[sigFam] || SIG_FAMS.all;
+  const ds = LIBS.map(lib => ({
+    label: LN[lib],
+    data: algs.map(a => IDX[a]?.[sigOp]?.[lib] || null),
+    backgroundColor: LC[lib]+'cc', borderRadius: 4, borderSkipped: false
+  })).filter(d => d.data.some(v=>v));
+  if (sigChart) sigChart.destroy();
+  sigChart = mkChart('sigMain','bar',algs,ds,{scales:sigScale==='logarithmic'?logScale:linScale});
+  document.getElementById('sigChartTitle').textContent = `Signature ${sigOp.charAt(0).toUpperCase()+sigOp.slice(1)} — ${sigFam==='all'?'All Families':sigFam.toUpperCase()}`;
+}
+function setSigOp(op,btn){sigOp=op;document.querySelectorAll('#pane-sig .ctrl .btn').forEach(b=>{if(['Sign','Keygen','Verify'].includes(b.textContent.trim()))b.classList.remove('active');});btn.classList.add('active');renderSigMain();}
+function setSigScale(s,btn){sigScale=s;document.querySelectorAll('#pane-sig .ctrl .btn').forEach(b=>{if(b.textContent.includes('Log')||b.textContent.includes('Linear'))b.classList.remove('active');});btn.classList.add('active');renderSigMain();}
+function setSigFamily(v){sigFam=v;renderSigMain();}
+
+// ══ HEATMAP ═══════════════════════════════════════════════════════════════════
+let hOp='keygen', hType='both';
+function buildHeatmap(){renderHeatmap();}
+function setHOp(op,btn){hOp=op;document.querySelectorAll('#pane-heatmap .ctrl .btn').forEach(b=>{if(['Keygen','Encaps / Sign','Decaps / Verify'].includes(b.textContent.trim()))b.classList.remove('active');});btn.classList.add('active');renderHeatmap();}
+function setHType(t,btn){hType=t;document.querySelectorAll('#pane-heatmap .ctrl .btn').forEach(b=>{if(['All','KEM only','Sig only'].includes(b.textContent.trim()))b.classList.remove('active');});btn.classList.add('active');renderHeatmap();}
+
+function renderHeatmap(){
+  const kemOp2=hOp==='keygen'?'keygen':hOp==='Encaps / Sign'?'encaps':'decaps';
+  const sigOp2=hOp==='keygen'?'keygen':hOp==='Encaps / Sign'?'sign':'verify';
+  const allAlgs=Object.keys(IDX).filter(a=>{
+    const isK=Object.values(D).some(d=>d.alg===a&&d.t==='KEM');
+    const isS=Object.values(D).some(d=>d.alg===a&&d.t==='SIG');
+    if(hType==='kem')return isK; if(hType==='sig')return isS; return true;
+  }).sort();
+  const allVals=[];
+  for(const alg of allAlgs){
+    const isK=Object.values(D).some(d=>d.alg===alg&&d.t==='KEM');
+    const op=isK?kemOp2:sigOp2;
+    for(const lib of LIBS){const v=IDX[alg]?.[op]?.[lib];if(v)allVals.push(v);}
+  }
+  allVals.sort((a,b)=>a-b);
+  const p10=allVals[Math.floor(allVals.length*.1)]||0;
+  const p90=allVals[Math.floor(allVals.length*.9)]||1;
+
+  function cellBg(val){
+    if(!val)return'#f8f9fc';
+    const t=Math.max(0,Math.min(1,1-(val-p10)/(p90-p10)));
+    if(t>.75)return'#f0fdf4';
+    if(t>.5)return'#eff4ff';
+    if(t>.25)return'#fffbeb';
+    return'#fef2f2';
+  }
+  function cellColor(val){
+    if(!val)return'#b8bece';
+    const t=Math.max(0,Math.min(1,1-(val-p10)/(p90-p10)));
+    if(t>.75)return'#16a34a';
+    if(t>.5)return'#2563eb';
+    if(t>.25)return'#d97706';
+    return'#dc2626';
+  }
+
+  document.getElementById('heatContainer').innerHTML=`
+    <table style="border-collapse:separate;border-spacing:2px;font-size:11px;white-space:nowrap;min-width:100%;">
+      <thead>
+        <tr style="background:var(--bg3);">
+          <th style="padding:10px 16px;text-align:left;font-weight:600;color:var(--text3);font-size:11px;border-radius:6px;min-width:180px;position:sticky;left:0;background:var(--bg3);">Algorithm</th>
+          <th style="padding:8px 6px;font-size:10px;color:var(--text3);text-align:center;border-radius:4px;">Type</th>
+          ${LIBS.map(l=>`<th style="padding:8px 6px;font-size:10px;color:${LC[l]};text-align:center;border-radius:4px;min-width:84px;">${LN[l]}</th>`).join('')}
+          <th style="padding:8px 10px;font-size:10px;color:var(--text3);text-align:left;border-radius:4px;">Winner</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${allAlgs.map(alg=>{
+          const isK=Object.values(D).some(d=>d.alg===alg&&d.t==='KEM');
+          const op=isK?kemOp2:sigOp2;
+          const vals=LIBS.map(lib=>IDX[alg]?.[op]?.[lib]||null);
+          if(!vals.some(v=>v))return'';
+          const minV=Math.min(...vals.filter(v=>v));
+          const winner=LIBS[vals.indexOf(minV)];
+          return`<tr>
+            <td style="padding:6px 16px;font-weight:500;color:var(--text);background:white;position:sticky;left:0;border-radius:4px;">${alg}</td>
+            <td style="padding:4px 6px;text-align:center;"><span class="pill ${isK?'pill-kem':'pill-sig'}">${isK?'KEM':'SIG'}</span></td>
+            ${vals.map((v,i)=>`<td style="padding:4px;">
+              <div class="hmap-cell" style="background:${cellBg(v)};color:${cellColor(v)};font-weight:${v&&v===minV?700:400};" title="${v?fms(v)+'ms':'N/A'}">
+                ${v?fms(v):'—'}
+              </div>
+            </td>`).join('')}
+            <td style="padding:6px 10px;font-size:11px;font-weight:600;color:${winner?LC[winner]:'var(--text4)'};">${winner?LN[winner]:'—'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ══ SECURITY vs SPEED ═════════════════════════════════════════════════════════
+function buildSecurity(){
+  const famC={mlkem:'#2563eb',ntru:'#16a34a',bike:'#d97706',hqc:'#7c3aed',frodo:'#dc2626',mceliece:'#0891b2'};
+  const famCS={mldsa:'#2563eb',falcon:'#d97706',sphincs:'#dc2626',mayo:'#16a34a'};
+  const kemSec={'ML-KEM-512':1,'ML-KEM-768':3,'ML-KEM-1024':5,'Kyber512':1,'NTRU-HPS-2048-509':1,'BIKE-L1':1,'BIKE-L3':3,'HQC-128':1,'FrodoKEM-640-AES':1,'McEliece348864':1};
+  const sigSec={'ML-DSA-44':2,'ML-DSA-65':3,'ML-DSA-87':5,'Dilithium2':2,'Dilithium3':3,'Dilithium5':5,'Falcon-512':1,'Falcon-1024':5,'SPHINCS-sha2-128f':1,'SPHINCS-sha2-128s':1,'MAYO-1':1,'MAYO-2':1};
+
+  const kemFamG={};
+  for(const[alg,sec]of Object.entries(kemSec)){const d=IDX[alg]?.keygen;const f=fastest(d);if(f&&d[f]){const fam=Object.values(D).find(v=>v.alg===alg)?.fam||'mlkem';(kemFamG[fam]=kemFamG[fam]||[]).push({x:sec+(Math.random()*.3-.15),y:1000/d[f],label:alg,lib:f});}}
+  const sigFamG={};
+  for(const[alg,sec]of Object.entries(sigSec)){const d=IDX[alg]?.sign;const f=fastest(d);if(f&&d[f]){const fam=Object.values(D).find(v=>v.alg===alg)?.fam||'mldsa';(sigFamG[fam]=sigFamG[fam]||[]).push({x:sec+(Math.random()*.3-.15),y:1000/d[f],label:alg,lib:f});}}
+
+  const scatter_scales = {
+    x:{min:0,max:6,ticks:{color:'#8890aa',font:{size:11},callback:v=>['','L1 (128-bit)','','L3 (192-bit)','','L5 (256-bit)',''][v]||''},grid:{color:'#f1f3f8'},title:{display:true,text:'NIST Security Level',color:'#8890aa',font:{size:12}}},
+    y:{ticks:{color:'#8890aa',font:{size:11},callback:v=>fops(v)+'/s'},grid:{color:'#f1f3f8'},title:{display:true,text:'Operations per second (higher = faster)',color:'#8890aa',font:{size:12}}}
+  };
+
+  mkChart('secKEM','scatter',null,
+    Object.entries(kemFamG).map(([fam,pts])=>({label:fam.toUpperCase(),data:pts,backgroundColor:famC[fam]||'#666',pointRadius:8,pointHoverRadius:10})),
+    {scales:scatter_scales,plugins:{tooltip:{callbacks:{label:ctx=>`${ctx.raw.label} (${LN[ctx.raw.lib]}): ${fops(ctx.parsed.y)} ops/sec`}}},other:{}}
+  );
+  mkChart('secSIG','scatter',null,
+    Object.entries(sigFamG).map(([fam,pts])=>({label:fam.toUpperCase(),data:pts,backgroundColor:famCS[fam]||'#666',pointRadius:8,pointHoverRadius:10})),
+    {scales:scatter_scales,plugins:{tooltip:{callbacks:{label:ctx=>`${ctx.raw.label} (${LN[ctx.raw.lib]}): ${fops(ctx.parsed.y)} ops/sec`}}},other:{}}
+  );
+}
+
+// ══ LIBRARY PROFILES ══════════════════════════════════════════════════════════
+function buildLibs() {
+  const P = [
+    {lib:'liboqs',full:'Open Quantum Safe — liboqs',lang:'C + Python/Go/Java bindings',v:'0.15.0',url:'https://github.com/open-quantum-safe/liboqs',wins:29,impl:'Industry-leading PQC library using AVX2 vectorized assembly and SHA-NI hardware instructions. Backed by AWS, Cloudflare, and IBM. The fastest library for all NIST standard algorithms.',pros:['Fastest for all NIST standards (AVX2)','247 algorithms — most complete','Production use at AWS, Cloudflare','Python, Go, Java bindings available','Active maintenance and updates'],cons:['C build toolchain required','No FIPS 140 certification yet','Large dependency footprint'],algs:'ML-KEM, ML-DSA, SLH-DSA, FALCON, NTRU, BIKE, HQC, FrodoKEM, McEliece, MAYO, CROSS, OV, SNOVA'},
+    {lib:'pqcrypto',full:'pqcrypto Python Library',lang:'Python (CFFI → PQClean C)',v:'0.4.0',url:'https://github.com/nicowillis/pqcrypto',wins:11,impl:'Python bindings wrapping PQClean reference C via CFFI. No hardware optimizations. Best choice for rapid prototyping in Python — just pip install and use.',pros:['Simple pip install','Pure Python API','Zero build complexity','Good for research/prototyping'],cons:['3–8× slower than liboqs','No AVX2 optimization','Smaller algorithm coverage'],algs:'ML-KEM-512/768/1024, ML-DSA-44/65/87, Falcon-512/1024, SPHINCS+, HQC, McEliece'},
+    {lib:'circl',full:'CIRCL — Cloudflare Cryptographic Library',lang:'Go',v:'1.6.3',url:'https://github.com/cloudflare/circl',wins:10,impl:'Production Go library by Cloudflare. Uses Go assembly for polynomial arithmetic — fastest ML-KEM encapsulation in our benchmark at 94k ops/sec. Actively deployed in Cloudflare TLS.',pros:['Fastest ML-KEM encaps (94k ops/sec)','Production Go code, used in real TLS','Hybrid PQC+classical support','Clean idiomatic Go API'],cons:['Go ecosystem only','Only 6 KEM algorithms','No signature algorithms'],algs:'ML-KEM-512/768/1024, Kyber-512/768/1024'},
+    {lib:'bouncycastle',full:'Bouncy Castle Java',lang:'Java (pure JVM)',v:'1.78',url:'https://www.bouncycastle.org',wins:0,impl:'Most widely used Java crypto library. Pure Java — no native code. JVM is 10–50× slower than C/Go for PQC but offers FIPS certification and deep Java/Android ecosystem integration.',pros:['FIPS 140-2/3 certified version available','Dominant in enterprise Java','Full NIST algorithm suite','Android compatible'],cons:['10–50× slower than C/Go','JVM startup overhead unavoidable','Falcon-512 keygen: 47ms vs liboqs 7.8ms'],algs:'Kyber, Dilithium, Falcon, SPHINCS+, NTRU, McEliece, BIKE, HQC'},
+    {lib:'pqclean',full:'PQClean Reference Implementations',lang:'C (clean reference)',v:'latest',url:'https://github.com/PQClean/PQClean',wins:20,impl:'Clean, auditable C reference code. No platform-specific optimizations. Primary purpose is correctness verification and embedded targets. All code manually reviewed and formally analyzed.',pros:['Auditable, clean-room C code','No external dependencies','Best for embedded/constrained devices','Wins McEliece and SPHINCS+ benchmarks'],cons:['No hardware acceleration','Slower than liboqs for NIST standards'],algs:'ML-KEM, ML-DSA, Falcon, SPHINCS+ (all 12), HQC, McEliece (7 variants)'},
+    {lib:'oqsprovider',full:'OQS OpenSSL Provider',lang:'C / OpenSSL 3.x',v:'0.12.0',url:'https://github.com/open-quantum-safe/oqs-provider',wins:22,impl:'Plugs liboqs algorithms into OpenSSL 3.x as a provider. Enables PQC in TLS 1.3 and X.509 certificates. Same crypto performance as liboqs plus a small EVP overhead (~0.01ms).',pros:['Drop-in OpenSSL 3.x integration','Enables PQC in TLS 1.3','All liboqs algorithms available','Hybrid PQC+classical TLS modes'],cons:['EVP API adds small overhead','Requires OpenSSL 3.x','More complex setup'],algs:'All liboqs algorithms via OpenSSL EVP API'},
+    {lib:'kyber-ref',full:'CRYSTALS-Kyber Official Reference',lang:'C',v:'NIST Round 3',url:'https://github.com/pq-crystals/kyber',wins:0,impl:'The original official C reference implementation submitted to NIST. Correctness baseline for all Kyber/ML-KEM implementations. O3-optimized portable C, no longer actively updated.',pros:['Official NIST submission','Correctness gold standard','NIST-validated parameters'],cons:['Uses old Kyber naming (not ML-KEM)','No longer updated','Reference only — not optimized'],algs:'Kyber-512, Kyber-768, Kyber-1024 (= ML-KEM-512/768/1024)'},
+    {lib:'dilithium-ref',full:'CRYSTALS-Dilithium Official Reference',lang:'C',v:'NIST Round 3',url:'https://github.com/pq-crystals/dilithium',wins:0,impl:'Official NIST submission reference for Dilithium (now ML-DSA). Shared library interface with full sign/verify API. New context parameter added to API in latest version.',pros:['Official NIST submission','Full shared library API','Reference for ML-DSA correctness'],cons:['Uses old Dilithium naming','New ctx API differs from PQClean'],algs:'Dilithium2 (=ML-DSA-44), Dilithium3 (=ML-DSA-65), Dilithium5 (=ML-DSA-87)'},
+    {lib:'sphincs-ref',full:'SPHINCS+ / SLH-DSA Official Reference',lang:'C',v:'NIST Round 3',url:'https://github.com/sphincs/sphincsplus',wins:7,impl:'Official NIST submission for SLH-DSA (FIPS 205). Supports SHA-2, SHAKE, and Haraka hash backends. Wins our SPHINCS+ benchmarks over pqcrypto due to direct C vs CFFI overhead.',pros:['Official reference for SLH-DSA/FIPS 205','All 12 SPHINCS+ parameter sets','3 hash backends (SHA-2, SHAKE, Haraka)'],cons:['SPHINCS+ only','Signing is very slow (39–1604ms)','Large signatures (7–17KB)'],algs:'All 12 SPHINCS+ variants: sha2/shake × 128/192/256 × f/s'},
+    {lib:'wolfssl',full:'wolfSSL / wolfCrypt',lang:'C (embedded-optimized)',v:'latest',url:'https://github.com/wolfSSL/wolfssl',wins:0,impl:'Compact TLS/crypto library for embedded and IoT. FIPS 140-3 validated. PQC via wolfCrypt. Best choice when you need FIPS certification AND a small memory footprint for constrained devices.',pros:['FIPS 140-3 validated','~220KB footprint — tiny','IoT/RTOS/embedded support','TLS integration built in','Commercial support available'],cons:['Limited PQC coverage','ML-KEM API still experimental','Different API naming conventions'],algs:'ML-KEM-512/768/1024 (experimental), Dilithium2/3/5'},
+  ];
+
+  document.getElementById('libProfiles').innerHTML = P.map(p => `
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
+        <div style="width:4px;min-height:52px;background:${LC[p.lib]};border-radius:2px;flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <div>
+              <div style="font-size:15px;font-weight:700;color:${LC[p.lib]};">${p.full}</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px;">${p.lang} · v${p.v} · <a href="${p.url}" target="_blank" style="color:var(--blue);text-decoration:none;">${p.url.replace('https://github.com/','github.com/')}</a></div>
+            </div>
+            <div style="text-align:center;background:var(--bg3);padding:8px 16px;border-radius:8px;">
+              <div style="font-size:22px;font-weight:700;color:${LC[p.lib]};font-family:var(--mono);">${p.wins}</div>
+              <div style="font-size:10px;color:var(--text3);">benchmark wins</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px;">${p.impl}</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div style="background:var(--green-light);border:1px solid var(--green-mid);border-radius:var(--r);padding:12px;">
+          <div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:6px;">✅ Strengths</div>
+          ${p.pros.map(s=>`<div style="font-size:12px;color:var(--text2);padding:2px 0;">• ${s}</div>`).join('')}
+        </div>
+        <div style="background:var(--red-light);border:1px solid var(--red-mid);border-radius:var(--r);padding:12px;">
+          <div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:6px;">⚠️ Limitations</div>
+          ${p.cons.map(s=>`<div style="font-size:12px;color:var(--text2);padding:2px 0;">• ${s}</div>`).join('')}
+        </div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--text3);">
+        <strong style="color:var(--text2);">Algorithms:</strong> ${p.algs}
+      </div>
+    </div>`).join('');
+}
+
+// ══ TABLE ══════════════════════════════════════════════════════════════════════
+let tType='', tLib='', tOp='', tSort='ops';
+function buildTable(){renderTable();}
+const libRef = {};
+for (const [,v] of Object.entries(D)) if (v.lib==='liboqs') libRef[`${v.alg}|${v.op}`] = v.m;
+
+function renderTable(){
+  const q = (document.getElementById('srch')?.value||'').toLowerCase();
+  let rows = Object.values(D);
+  if (q) rows = rows.filter(r => r.alg.toLowerCase().includes(q)||r.lib.toLowerCase().includes(q)||r.op.includes(q));
+  if (tType) rows = rows.filter(r => r.t === tType);
+  if (tLib) rows = rows.filter(r => r.lib === tLib);
+  if (tOp) rows = rows.filter(r => r.op === tOp);
+  rows.sort((a,b) => tSort==='ops'?b.ops-a.ops : tSort==='slow'?a.ops-b.ops : tSort==='lib'?a.lib.localeCompare(b.lib) : a.alg.localeCompare(b.alg));
+  document.getElementById('rowcnt').textContent = `${rows.length} results`;
+  const sp = ops => ops>5000?'fast':ops>500?'mid':'slow';
+  document.getElementById('tbody').innerHTML = rows.map(r => {
+    const ref = libRef[`${r.alg}|${r.op}`];
+    let vs = '—';
+    if (ref && r.lib!=='liboqs' && r.m>.0001) {
+      const ratio = r.m/ref;
+      vs = ratio>1 ? `<span style="color:var(--red);font-size:12px;">${ratio.toFixed(1)}× slower</span>` : `<span style="color:var(--green);font-size:12px;">${(1/ratio).toFixed(1)}× faster</span>`;
+    } else if (r.lib==='liboqs') vs = '<span style="color:var(--text3);font-size:11px;">baseline</span>';
+    return `<tr>
+      <td style="font-weight:600;font-family:var(--mono);font-size:12px;">${r.alg}</td>
+      <td><span style="color:${LC[r.lib]||'#666'};font-weight:500;">${LN[r.lib]||r.lib}</span></td>
+      <td><span class="pill ${r.t==='KEM'?'pill-kem':'pill-sig'}">${r.t}</span></td>
+      <td style="color:var(--text3);">${r.op}</td>
+      <td style="font-family:var(--mono);font-weight:600;">${fms(r.m)}</td>
+      <td style="font-family:var(--mono);color:var(--text3);">${fms(r.md)}</td>
+      <td style="font-family:var(--mono);color:var(--text3);">±${fms(r.sd)}</td>
+      <td style="font-family:var(--mono);color:${r.ops>5000?'var(--green)':r.ops>500?'var(--amber)':'var(--red)'};font-weight:600;">${fops(r.ops)}</td>
+      <td>${vs}</td>
+      <td><span class="pill pill-${sp(r.ops)}">${sp(r.ops)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function exportCSV(){
+  const h='algorithm,library,type,operation,mean_ms,median_ms,stdev_ms,ops_per_sec\n';
+  const rows=Object.values(D).map(r=>`${r.alg},${r.lib},${r.t},${r.op},${r.m},${r.md||''},${r.sd||''},${r.ops||''}`).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([h+rows],{type:'text/csv'}));a.download='pqc_benchmark_2026.csv';a.click();
+}
+
+// Init
+built['overview'] = true;
+buildOverview();
+</script>
+</body>
+</html>
