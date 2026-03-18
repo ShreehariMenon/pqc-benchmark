@@ -11,7 +11,7 @@
 
 ## 📊 Live Dashboard
 
-**[→ Open Interactive Dashboard](https://YOUR_USERNAME.github.io/pqc-benchmark/)**
+**[→ Open Interactive Dashboard](https://shreeharimenon.github.io/pqc-benchmark/)**
 
 The dashboard includes:
 - KEM comparison (keygen / encaps / decaps) with log/linear scale toggle
@@ -23,7 +23,7 @@ The dashboard includes:
 
 ---
 
-## 🎯 What We Measured
+## 🎯 What Was Measured
 
 We benchmarked all **NIST post-quantum standards** and major alternates:
 
