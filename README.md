@@ -1,112 +1,175 @@
-# PQC Open Source Library Benchmark 2026
+# 🔐 PQC Open Source Library Benchmark 2026
 
-Comprehensive timing analysis of **10 open-source Post-Quantum Cryptography libraries** on the same x86-64 hardware.
+> A comprehensive performance analysis of 10 open-source Post-Quantum Cryptography libraries on identical x86-64 hardware.
 
-## Libraries Benchmarked
+[![Live Dashboard](https://img.shields.io/badge/Live%20Dashboard-View%20Results-blue?style=for-the-badge)](https://YOUR_USERNAME.github.io/pqc-benchmark/)
+[![Algorithms](https://img.shields.io/badge/Algorithms-247-green?style=for-the-badge)]()
+[![Entries](https://img.shields.io/badge/Benchmark%20Entries-1053-orange?style=for-the-badge)]()
+[![Libraries](https://img.shields.io/badge/Libraries-10-purple?style=for-the-badge)]()
 
-| Library | Language | Algorithms | Notes |
-|---|---|---|---|
-| liboqs | C + Python | 247 | AVX2 optimized, NIST standard |
-| pqcrypto | Python | 21 | PQClean wrappers |
-| CIRCL | Go | 6 | Cloudflare, fastest encaps |
-| Bouncy Castle | Java | 11 | FIPS certified |
-| PQClean | C | 35 | Reference implementations |
-| oqs-provider | C/OpenSSL | 18 | TLS integration |
-| kyber-ref | C | 3 | Official CRYSTALS-Kyber |
-| dilithium-ref | C | 3 | Official CRYSTALS-Dilithium |
-| sphincs-ref | C | 4 | Official SPHINCS+ |
-| wolfSSL | C | 3 | Embedded/IoT focused |
+---
 
-## Results
+## 📊 Live Dashboard
 
-- **1,053 benchmark entries** across keygen, encaps/sign, decaps/verify
-- **38 KEM algorithms** tested
-- **209 signature algorithms** tested
-- Hardware: x86-64, Ubuntu 22.04
-- Date: March 2026
+**[→ Open Interactive Dashboard](https://YOUR_USERNAME.github.io/pqc-benchmark/)**
 
-## Key Findings
+The dashboard includes:
+- KEM comparison (keygen / encaps / decaps) with log/linear scale toggle
+- Signature comparison (sign / keygen / verify) with algorithm family filter
+- Heat map — library × algorithm performance matrix
+- Security vs Speed scatter plot
+- Library profiles with detailed strengths/limitations
+- Full searchable data table with CSV export
 
-- **liboqs** wins 35% of comparisons — AVX2 hardware optimizations
-- **CIRCL (Go)** fastest for ML-KEM encaps/decaps
-- **PQClean** wins code-based algorithms (McEliece, HQC)
-- **Bouncy Castle** slowest — 10-50× vs C/Go (JVM overhead)
-- **Falcon signing** — liboqs 17× faster than pqcrypto (AVX2 vs portable C)
+---
 
-## Algorithms Covered
+## 🎯 What We Measured
 
-### NIST Standards (FIPS 203/204/205)
-- ML-KEM-512/768/1024 (FIPS 203)
-- ML-DSA-44/65/87 (FIPS 204)
-- SLH-DSA / SPHINCS+ (FIPS 205)
+We benchmarked all **NIST post-quantum standards** and major alternates:
 
-### NIST Alternates
-- FALCON-512/1024
-- NTRU-HPS, NTRU-HRSS
-- BIKE-L1/L3/L5
-- HQC-128/192/256
-- Classic McEliece
-- FrodoKEM
-- MAYO
+| Standard | Algorithm | Security Levels |
+|---|---|---|
+| FIPS 203 | ML-KEM (Kyber) | 128 / 192 / 256-bit |
+| FIPS 204 | ML-DSA (Dilithium) | 128 / 192 / 256-bit |
+| FIPS 205 | SLH-DSA (SPHINCS+) | 128 / 192 / 256-bit |
+| Alternate | FALCON | Level 1 / Level 5 |
+| Alternate | NTRU-HPS | Level 1 / Level 3 |
+| Alternate | BIKE | Level 1 / Level 3 |
+| Alternate | HQC | Level 1 / Level 3 / Level 5 |
+| Alternate | FrodoKEM | Level 1 / Level 3 |
+| Alternate | Classic McEliece | Level 1 |
+| New | MAYO | Level 1 |
 
-## File Structure
+---
+
+## 📚 Libraries Benchmarked
+
+| Library | Language | Algorithms | Version | Notes |
+|---|---|---|---|---|
+| [liboqs](https://github.com/open-quantum-safe/liboqs) | C + Python/Go/Java | 247 | 0.15.0 | **Fastest** — AVX2 optimized |
+| [pqcrypto](https://github.com/nicowillis/pqcrypto) | Python | 21 | 0.4.0 | Easiest pip install |
+| [CIRCL](https://github.com/cloudflare/circl) | Go | 6 | 1.6.3 | **Fastest encaps** — Cloudflare |
+| [Bouncy Castle](https://www.bouncycastle.org) | Java | 11 | 1.78 | FIPS certified |
+| [PQClean](https://github.com/PQClean/PQClean) | C reference | 35 | latest | Most auditable |
+| [oqs-provider](https://github.com/open-quantum-safe/oqs-provider) | C/OpenSSL | 18 | 0.12.0 | TLS 1.3 integration |
+| [kyber-ref](https://github.com/pq-crystals/kyber) | C reference | 3 | NIST R3 | Official Kyber ref |
+| [dilithium-ref](https://github.com/pq-crystals/dilithium) | C reference | 3 | NIST R3 | Official Dilithium ref |
+| [sphincs-ref](https://github.com/sphincs/sphincsplus) | C reference | 4 | NIST R3 | Official SPHINCS+ ref |
+| [wolfSSL](https://github.com/wolfSSL/wolfssl) | C embedded | 3 | latest | FIPS 140-3, IoT |
+
+---
+
+## 🔑 Key Findings
+
+### 1. liboqs wins 35% of all comparisons
+AVX2 hardware-optimized assembly makes ML-KEM-512 keygen **3.3× faster** than PQClean reference and **10× faster** than pqcrypto.
+
+### 2. CIRCL (Go) is fastest for ML-KEM encapsulation
+Cloudflare's Go implementation achieves **94,000 ops/sec** for ML-KEM-512 encapsulation, beating liboqs (61k ops/sec).
+
+### 3. Falcon signing: 17× gap between implementations
+| Library | Falcon-512 sign | 
+|---|---|
+| liboqs (AVX2) | **0.31ms** |
+| pqcrypto (portable C) | 5.28ms |
+| Bouncy Castle (Java) | 11.2ms |
+
+### 4. Java is 10–50× slower for PQC
+Falcon-512 keygen: liboqs 7.8ms vs Bouncy Castle 47.4ms. JVM overhead is unavoidable.
+
+### 5. McEliece: massive keys but fast encapsulation
+261KB public key, 166ms keygen — but only **0.07ms encapsulation**. Key size is the real barrier.
+
+---
+
+## 📂 Repository Structure
 ```
-pqc-benchmark-project/
+pqc-benchmark/
 ├── README.md
 ├── dashboard/
-│   └── pqc_final_dashboard.html    ← Interactive web dashboard
+│   └── index.html              ← Self-contained interactive dashboard
 ├── results/
-│   ├── all_results_final.json      ← All 1,053 entries merged
+│   ├── all_results_final.json  ← All 1,053 entries merged
 │   ├── liboqs_results.json
 │   ├── pqcrypto_results.json
 │   ├── circl_results.json
 │   ├── bouncycastle_results.json
 │   ├── pqclean_results.json
 │   ├── oqsprovider_results.json
-│   ├── ref_results.json
+│   ├── ref_results.json        ← kyber-ref + dilithium-ref + sphincs-ref
 │   ├── kyber_wolfssl_results.json
 │   └── wolfssl_results.json
 ├── scripts/
-│   ├── pqc_bench_liboqs.py         ← liboqs benchmark
-│   ├── pqc_bench_pqcrypto.py       ← pqcrypto benchmark
-│   ├── pqc_bench_pqclean.py        ← PQClean C benchmark
-│   ├── pqc_bench_oqsprovider2.py   ← oqs-provider benchmark
-│   ├── bench_all_refs.py           ← Official refs benchmark
-│   ├── bench_wolfssl.py            ← wolfSSL benchmark
-│   └── pqc_final_compare.py        ← Cross-library comparison
-└── install/
-    └── SETUP.md                    ← How to reproduce
+│   ├── bench_liboqs.py
+│   ├── bench_pqcrypto.py
+│   ├── bench_pqclean.py
+│   ├── bench_oqsprovider.py
+│   ├── bench_all_refs.py
+│   ├── bench_wolfssl.py
+│   └── merge_results.py
+└── docs/
+    ├── SETUP.md                ← How to reproduce benchmarks
+    ├── METHODOLOGY.md          ← Timing methodology explained
+    └── ALGORITHMS.md           ← Algorithm descriptions
 ```
 
-## How to Reproduce
+---
 
-See `install/SETUP.md` for full instructions.
+## 🔬 Methodology
 
-Quick start:
+- **Platform:** x86-64, Ubuntu 22.04, Intel Core CPU
+- **Iterations:** 20 per operation
+- **Timer:** `clock_gettime(CLOCK_MONOTONIC)` — nanosecond precision
+- **Metric:** Mean time in milliseconds across all iterations
+- **Warmup:** 1 warmup iteration before measurement
+- **Optimization:** Libraries compiled with `-O3` and `-fomit-frame-pointer` where applicable
+
+---
+
+## 🚀 How to Reproduce
 ```bash
-# Install liboqs
+# 1. Install liboqs
 git clone https://github.com/open-quantum-safe/liboqs
 cd liboqs && mkdir build && cd build
 cmake -GNinja -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=~/.local ..
 ninja && ninja install
 
-# Install Python wrapper
+# 2. Install Python libraries
 pip install liboqs-python pqcrypto --user
 
-# Run benchmark
+# 3. Set environment
 export LD_LIBRARY_PATH=~/.local/lib:$LD_LIBRARY_PATH
-python3 scripts/pqc_bench_liboqs.py
+
+# 4. Run benchmarks
+python3 scripts/bench_liboqs.py
+python3 scripts/bench_pqcrypto.py
+
+# 5. Merge all results
+python3 scripts/merge_results.py
 ```
 
-## Dashboard
+Full instructions: [docs/SETUP.md](docs/SETUP.md)
 
-Open `dashboard/pqc_final_dashboard.html` in any browser.
-No server required — fully self-contained HTML.
+---
 
-## References
+## 📖 References
 
-- NIST PQC Standardization: https://csrc.nist.gov/pqcrypto
-- Open Quantum Safe: https://openquantumsafe.org
-- CRYSTALS-Kyber: https://pq-crystals.org/kyber
-- CRYSTALS-Dilithium: https://pq-crystals.org/dilithium
-- SPHINCS+: https://sphincs.org
+- [NIST PQC Standardization](https://csrc.nist.gov/pqcrypto)
+- [FIPS 203 — ML-KEM](https://csrc.nist.gov/pubs/fips/203/final)
+- [FIPS 204 — ML-DSA](https://csrc.nist.gov/pubs/fips/204/final)
+- [FIPS 205 — SLH-DSA](https://csrc.nist.gov/pubs/fips/205/final)
+- [Open Quantum Safe Project](https://openquantumsafe.org)
+- [CRYSTALS-Kyber](https://pq-crystals.org/kyber)
+- [CRYSTALS-Dilithium](https://pq-crystals.org/dilithium)
+- [SPHINCS+](https://sphincs.org)
+
+---
+
+## 📄 License
+
+Benchmark scripts: MIT License  
+Algorithm implementations are subject to their respective licenses.
+
+---
+
+*Benchmarked March 2026 · x86-64 · Ubuntu 22.04*
