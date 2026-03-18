@@ -2,7 +2,7 @@
 
 > A comprehensive performance analysis of 10 open-source Post-Quantum Cryptography libraries on identical x86-64 hardware.  
 
-![Dashboard Preview](docs/dashboard_preview.png)
+![Dashboard Preview](docs/dashboard_preview.png) 
 
 
 [![Live Dashboard](https://img.shields.io/badge/Live%20Dashboard-View%20Results-blue?style=for-the-badge)](https://shreeharimenon.github.io/pqc-benchmark/)
