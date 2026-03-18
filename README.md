@@ -2,7 +2,7 @@
 
 > A comprehensive performance analysis of 10 open-source Post-Quantum Cryptography libraries on identical x86-64 hardware.
 
-[![Live Dashboard](https://img.shields.io/badge/Live%20Dashboard-View%20Results-blue?style=for-the-badge)](https://YOUR_USERNAME.github.io/pqc-benchmark/)
+[![Live Dashboard](https://img.shields.io/badge/Live%20Dashboard-View%20Results-blue?style=for-the-badge)](https://shreeharimenon.github.io/pqc-benchmark/dashboard/)
 [![Algorithms](https://img.shields.io/badge/Algorithms-247-green?style=for-the-badge)]()
 [![Entries](https://img.shields.io/badge/Benchmark%20Entries-1053-orange?style=for-the-badge)]()
 [![Libraries](https://img.shields.io/badge/Libraries-10-purple?style=for-the-badge)]()
@@ -11,7 +11,7 @@
 
 ## 📊 Live Dashboard
 
-**[→ Open Interactive Dashboard](https://shreeharimenon.github.io/pqc-benchmark/)**
+**[→ Open Interactive Dashboard](https://shreeharimenon.github.io/pqc-benchmark/dashboard/)**
 
 The dashboard includes:
 - KEM comparison (keygen / encaps / decaps) with log/linear scale toggle
