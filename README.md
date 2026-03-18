@@ -178,9 +178,20 @@ Algorithm implementations are subject to their respective licenses.
 
 ---
 
+## 📌 Citation
+
+If this benchmark dataset or analysis is useful, please cite:
+
+Menon, Shreehari.  
+**PQC Open-Source Library Performance Benchmark.**  
+GitHub Repository, 2026.
+
+---
+
 ## 👤 Author
 
 **Shreehari Menon**  
 PQC Benchmark Implementation & Visualization · 2026
+
 
 
