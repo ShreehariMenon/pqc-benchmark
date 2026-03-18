@@ -1,0 +1,737 @@
+{
+  "hqc-128|pqclean|keygen": {
+    "mean_ms": 3.6899,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "hqc-128"
+  },
+  "hqc-128|pqclean|encaps": {
+    "mean_ms": 4.2994,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "hqc-128"
+  },
+  "hqc-128|pqclean|decaps": {
+    "mean_ms": 6.2774,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "hqc-128"
+  },
+  "hqc-192|pqclean|keygen": {
+    "mean_ms": 6.2305,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "hqc-192"
+  },
+  "hqc-192|pqclean|encaps": {
+    "mean_ms": 12.5368,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "hqc-192"
+  },
+  "hqc-192|pqclean|decaps": {
+    "mean_ms": 18.8657,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "hqc-192"
+  },
+  "hqc-256|pqclean|keygen": {
+    "mean_ms": 11.1755,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "hqc-256"
+  },
+  "hqc-256|pqclean|encaps": {
+    "mean_ms": 22.4484,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "hqc-256"
+  },
+  "hqc-256|pqclean|decaps": {
+    "mean_ms": 33.817,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "hqc-256"
+  },
+  "mceliece348864|pqclean|keygen": {
+    "mean_ms": 128.6968,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece348864"
+  },
+  "mceliece348864|pqclean|encaps": {
+    "mean_ms": 0.0682,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece348864"
+  },
+  "mceliece348864|pqclean|decaps": {
+    "mean_ms": 20.4565,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece348864"
+  },
+  "mceliece348864f|pqclean|keygen": {
+    "mean_ms": 62.6638,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece348864f"
+  },
+  "mceliece348864f|pqclean|encaps": {
+    "mean_ms": 0.0587,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece348864f"
+  },
+  "mceliece348864f|pqclean|decaps": {
+    "mean_ms": 20.4891,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece348864f"
+  },
+  "mceliece460896|pqclean|keygen": {
+    "mean_ms": 321.7413,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece460896"
+  },
+  "mceliece460896|pqclean|encaps": {
+    "mean_ms": 0.1348,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece460896"
+  },
+  "mceliece460896|pqclean|decaps": {
+    "mean_ms": 47.1411,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece460896"
+  },
+  "mceliece460896f|pqclean|keygen": {
+    "mean_ms": 164.292,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece460896f"
+  },
+  "mceliece460896f|pqclean|encaps": {
+    "mean_ms": 0.14,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece460896f"
+  },
+  "mceliece460896f|pqclean|decaps": {
+    "mean_ms": 46.9968,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece460896f"
+  },
+  "mceliece6688128|pqclean|keygen": {
+    "mean_ms": 972.3063,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece6688128"
+  },
+  "mceliece6688128|pqclean|encaps": {
+    "mean_ms": 0.2413,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece6688128"
+  },
+  "mceliece6688128|pqclean|decaps": {
+    "mean_ms": 89.5172,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece6688128"
+  },
+  "mceliece6688128f|pqclean|keygen": {
+    "mean_ms": 304.978,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece6688128f"
+  },
+  "mceliece6688128f|pqclean|encaps": {
+    "mean_ms": 0.2159,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece6688128f"
+  },
+  "mceliece6688128f|pqclean|decaps": {
+    "mean_ms": 90.1902,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece6688128f"
+  },
+  "mceliece6960119|pqclean|keygen": {
+    "mean_ms": 718.1225,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece6960119"
+  },
+  "mceliece6960119|pqclean|encaps": {
+    "mean_ms": 0.9127,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece6960119"
+  },
+  "mceliece6960119|pqclean|decaps": {
+    "mean_ms": 85.7062,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece6960119"
+  },
+  "mceliece6960119f|pqclean|keygen": {
+    "mean_ms": 313.0846,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece6960119f"
+  },
+  "mceliece6960119f|pqclean|encaps": {
+    "mean_ms": 0.9085,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece6960119f"
+  },
+  "mceliece6960119f|pqclean|decaps": {
+    "mean_ms": 85.7697,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece6960119f"
+  },
+  "mceliece8192128|pqclean|keygen": {
+    "mean_ms": 876.1151,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece8192128"
+  },
+  "mceliece8192128|pqclean|encaps": {
+    "mean_ms": 0.2469,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece8192128"
+  },
+  "mceliece8192128|pqclean|decaps": {
+    "mean_ms": 109.2726,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece8192128"
+  },
+  "mceliece8192128f|pqclean|keygen": {
+    "mean_ms": 325.4108,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "mceliece8192128f"
+  },
+  "mceliece8192128f|pqclean|encaps": {
+    "mean_ms": 0.2335,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "mceliece8192128f"
+  },
+  "mceliece8192128f|pqclean|decaps": {
+    "mean_ms": 109.3862,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "mceliece8192128f"
+  },
+  "ml-kem-1024|pqclean|keygen": {
+    "mean_ms": 0.1275,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "ml-kem-1024"
+  },
+  "ml-kem-1024|pqclean|encaps": {
+    "mean_ms": 0.1313,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "ml-kem-1024"
+  },
+  "ml-kem-1024|pqclean|decaps": {
+    "mean_ms": 0.1522,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "ml-kem-1024"
+  },
+  "ml-kem-512|pqclean|keygen": {
+    "mean_ms": 0.0443,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "ml-kem-512"
+  },
+  "ml-kem-512|pqclean|encaps": {
+    "mean_ms": 0.0524,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "ml-kem-512"
+  },
+  "ml-kem-512|pqclean|decaps": {
+    "mean_ms": 0.0653,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "ml-kem-512"
+  },
+  "ml-kem-768|pqclean|keygen": {
+    "mean_ms": 0.0774,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "ml-kem-768"
+  },
+  "ml-kem-768|pqclean|encaps": {
+    "mean_ms": 0.0858,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "pqclean",
+    "algorithm": "ml-kem-768"
+  },
+  "ml-kem-768|pqclean|decaps": {
+    "mean_ms": 0.1034,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "pqclean",
+    "algorithm": "ml-kem-768"
+  },
+  "falcon-1024|pqclean|keygen": {
+    "mean_ms": 57.6177,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "falcon-1024"
+  },
+  "falcon-1024|pqclean|sign": {
+    "mean_ms": 11.9305,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "falcon-1024"
+  },
+  "falcon-1024|pqclean|verify": {
+    "mean_ms": 0.132,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "falcon-1024"
+  },
+  "falcon-512|pqclean|keygen": {
+    "mean_ms": 17.8039,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "falcon-512"
+  },
+  "falcon-512|pqclean|sign": {
+    "mean_ms": 5.4585,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "falcon-512"
+  },
+  "falcon-512|pqclean|verify": {
+    "mean_ms": 0.0626,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "falcon-512"
+  },
+  "falcon-padded-1024|pqclean|keygen": {
+    "mean_ms": 63.5925,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "falcon-padded-1024"
+  },
+  "falcon-padded-1024|pqclean|sign": {
+    "mean_ms": 11.9029,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "falcon-padded-1024"
+  },
+  "falcon-padded-1024|pqclean|verify": {
+    "mean_ms": 0.1279,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "falcon-padded-1024"
+  },
+  "falcon-padded-512|pqclean|keygen": {
+    "mean_ms": 15.5793,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "falcon-padded-512"
+  },
+  "falcon-padded-512|pqclean|sign": {
+    "mean_ms": 5.4631,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "falcon-padded-512"
+  },
+  "falcon-padded-512|pqclean|verify": {
+    "mean_ms": 0.0642,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "falcon-padded-512"
+  },
+  "ml-dsa-44|pqclean|keygen": {
+    "mean_ms": 0.1205,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-44"
+  },
+  "ml-dsa-44|pqclean|sign": {
+    "mean_ms": 0.4914,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-44"
+  },
+  "ml-dsa-44|pqclean|verify": {
+    "mean_ms": 0.1297,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-44"
+  },
+  "ml-dsa-65|pqclean|keygen": {
+    "mean_ms": 0.2176,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-65"
+  },
+  "ml-dsa-65|pqclean|sign": {
+    "mean_ms": 0.8032,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-65"
+  },
+  "ml-dsa-65|pqclean|verify": {
+    "mean_ms": 0.209,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-65"
+  },
+  "ml-dsa-87|pqclean|keygen": {
+    "mean_ms": 0.3852,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-87"
+  },
+  "ml-dsa-87|pqclean|sign": {
+    "mean_ms": 1.0914,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-87"
+  },
+  "ml-dsa-87|pqclean|verify": {
+    "mean_ms": 0.3914,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "ml-dsa-87"
+  },
+  "sphincs-sha2-128f-simple|pqclean|keygen": {
+    "mean_ms": 1.7678,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-128f-simple"
+  },
+  "sphincs-sha2-128f-simple|pqclean|sign": {
+    "mean_ms": 41.3891,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-128f-simple"
+  },
+  "sphincs-sha2-128f-simple|pqclean|verify": {
+    "mean_ms": 2.4231,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-128f-simple"
+  },
+  "sphincs-sha2-128s-simple|pqclean|keygen": {
+    "mean_ms": 110.1583,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-128s-simple"
+  },
+  "sphincs-sha2-128s-simple|pqclean|sign": {
+    "mean_ms": 838.0644,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-128s-simple"
+  },
+  "sphincs-sha2-128s-simple|pqclean|verify": {
+    "mean_ms": 0.8518,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-128s-simple"
+  },
+  "sphincs-sha2-192f-simple|pqclean|keygen": {
+    "mean_ms": 2.5508,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-192f-simple"
+  },
+  "sphincs-sha2-192f-simple|pqclean|sign": {
+    "mean_ms": 67.1669,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-192f-simple"
+  },
+  "sphincs-sha2-192f-simple|pqclean|verify": {
+    "mean_ms": 3.599,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-192f-simple"
+  },
+  "sphincs-sha2-192s-simple|pqclean|keygen": {
+    "mean_ms": 161.6925,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-192s-simple"
+  },
+  "sphincs-sha2-192s-simple|pqclean|sign": {
+    "mean_ms": 1511.5183,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-192s-simple"
+  },
+  "sphincs-sha2-192s-simple|pqclean|verify": {
+    "mean_ms": 1.2769,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-192s-simple"
+  },
+  "sphincs-sha2-256f-simple|pqclean|keygen": {
+    "mean_ms": 6.6892,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-256f-simple"
+  },
+  "sphincs-sha2-256f-simple|pqclean|sign": {
+    "mean_ms": 137.5868,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-256f-simple"
+  },
+  "sphincs-sha2-256f-simple|pqclean|verify": {
+    "mean_ms": 3.748,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-256f-simple"
+  },
+  "sphincs-sha2-256s-simple|pqclean|keygen": {
+    "mean_ms": 108.5656,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-256s-simple"
+  },
+  "sphincs-sha2-256s-simple|pqclean|sign": {
+    "mean_ms": 1340.0315,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-256s-simple"
+  },
+  "sphincs-sha2-256s-simple|pqclean|verify": {
+    "mean_ms": 1.8791,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-sha2-256s-simple"
+  },
+  "sphincs-shake-128f-simple|pqclean|keygen": {
+    "mean_ms": 3.5108,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-128f-simple"
+  },
+  "sphincs-shake-128f-simple|pqclean|sign": {
+    "mean_ms": 82.1076,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-128f-simple"
+  },
+  "sphincs-shake-128f-simple|pqclean|verify": {
+    "mean_ms": 5.0226,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-128f-simple"
+  },
+  "sphincs-shake-128s-simple|pqclean|keygen": {
+    "mean_ms": 219.1167,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-128s-simple"
+  },
+  "sphincs-shake-128s-simple|pqclean|sign": {
+    "mean_ms": 1664.6527,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-128s-simple"
+  },
+  "sphincs-shake-128s-simple|pqclean|verify": {
+    "mean_ms": 1.6126,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-128s-simple"
+  },
+  "sphincs-shake-192f-simple|pqclean|keygen": {
+    "mean_ms": 5.1386,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-192f-simple"
+  },
+  "sphincs-shake-192f-simple|pqclean|sign": {
+    "mean_ms": 132.8681,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-192f-simple"
+  },
+  "sphincs-shake-192f-simple|pqclean|verify": {
+    "mean_ms": 7.0793,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-192f-simple"
+  },
+  "sphincs-shake-192s-simple|pqclean|keygen": {
+    "mean_ms": 329.1225,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-192s-simple"
+  },
+  "sphincs-shake-192s-simple|pqclean|sign": {
+    "mean_ms": 2967.6972,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-192s-simple"
+  },
+  "sphincs-shake-192s-simple|pqclean|verify": {
+    "mean_ms": 2.3564,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-192s-simple"
+  },
+  "sphincs-shake-256f-simple|pqclean|keygen": {
+    "mean_ms": 13.5241,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-256f-simple"
+  },
+  "sphincs-shake-256f-simple|pqclean|sign": {
+    "mean_ms": 272.0478,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-256f-simple"
+  },
+  "sphincs-shake-256f-simple|pqclean|verify": {
+    "mean_ms": 7.3488,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-256f-simple"
+  },
+  "sphincs-shake-256s-simple|pqclean|keygen": {
+    "mean_ms": 216.4273,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-256s-simple"
+  },
+  "sphincs-shake-256s-simple|pqclean|sign": {
+    "mean_ms": 2581.5859,
+    "type": "SIG",
+    "op": "sign",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-256s-simple"
+  },
+  "sphincs-shake-256s-simple|pqclean|verify": {
+    "mean_ms": 3.5816,
+    "type": "SIG",
+    "op": "verify",
+    "library": "pqclean",
+    "algorithm": "sphincs-shake-256s-simple"
+  }
+}

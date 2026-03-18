@@ -1,0 +1,65 @@
+{
+  "Dilithium2|wolfssl|keygen": {
+    "mean_ms": 0.081,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "wolfssl",
+    "algorithm": "Dilithium2"
+  },
+  "Dilithium2|wolfssl|sign": {
+    "mean_ms": 0.0,
+    "type": "SIG",
+    "op": "sign",
+    "library": "wolfssl",
+    "algorithm": "Dilithium2"
+  },
+  "Dilithium2|wolfssl|verify": {
+    "mean_ms": 0.0065,
+    "type": "SIG",
+    "op": "verify",
+    "library": "wolfssl",
+    "algorithm": "Dilithium2"
+  },
+  "Dilithium3|wolfssl|keygen": {
+    "mean_ms": 0.1496,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "wolfssl",
+    "algorithm": "Dilithium3"
+  },
+  "Dilithium3|wolfssl|sign": {
+    "mean_ms": 0.0,
+    "type": "SIG",
+    "op": "sign",
+    "library": "wolfssl",
+    "algorithm": "Dilithium3"
+  },
+  "Dilithium3|wolfssl|verify": {
+    "mean_ms": 0.0084,
+    "type": "SIG",
+    "op": "verify",
+    "library": "wolfssl",
+    "algorithm": "Dilithium3"
+  },
+  "Dilithium5|wolfssl|keygen": {
+    "mean_ms": 0.2227,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "wolfssl",
+    "algorithm": "Dilithium5"
+  },
+  "Dilithium5|wolfssl|sign": {
+    "mean_ms": 0.0,
+    "type": "SIG",
+    "op": "sign",
+    "library": "wolfssl",
+    "algorithm": "Dilithium5"
+  },
+  "Dilithium5|wolfssl|verify": {
+    "mean_ms": 0.0107,
+    "type": "SIG",
+    "op": "verify",
+    "library": "wolfssl",
+    "algorithm": "Dilithium5"
+  }
+}

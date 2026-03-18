@@ -1,0 +1,128 @@
+{
+  "Kyber1024|circl|decaps": {
+    "mean_ms": 0.024999999999999998,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "circl",
+    "algorithm": "Kyber1024"
+  },
+  "Kyber1024|circl|encaps": {
+    "mean_ms": 0.023899999999999998,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "circl",
+    "algorithm": "Kyber1024"
+  },
+  "Kyber1024|circl|keygen": {
+    "mean_ms": 0.06020000000000001,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "circl",
+    "algorithm": "Kyber1024"
+  },
+  "Kyber512|circl|decaps": {
+    "mean_ms": 0.015100000000000002,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "circl",
+    "algorithm": "Kyber512"
+  },
+  "Kyber512|circl|encaps": {
+    "mean_ms": 0.0154,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "circl",
+    "algorithm": "Kyber512"
+  },
+  "Kyber512|circl|keygen": {
+    "mean_ms": 0.024599999999999997,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "circl",
+    "algorithm": "Kyber512"
+  },
+  "Kyber768|circl|decaps": {
+    "mean_ms": 0.0191,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "circl",
+    "algorithm": "Kyber768"
+  },
+  "Kyber768|circl|encaps": {
+    "mean_ms": 0.018799999999999997,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "circl",
+    "algorithm": "Kyber768"
+  },
+  "Kyber768|circl|keygen": {
+    "mean_ms": 0.04089999999999999,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "circl",
+    "algorithm": "Kyber768"
+  },
+  "ML-KEM-1024|circl|decaps": {
+    "mean_ms": 0.024399999999999998,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "circl",
+    "algorithm": "ML-KEM-1024"
+  },
+  "ML-KEM-1024|circl|encaps": {
+    "mean_ms": 0.016500000000000004,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "circl",
+    "algorithm": "ML-KEM-1024"
+  },
+  "ML-KEM-1024|circl|keygen": {
+    "mean_ms": 0.05850000000000001,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "circl",
+    "algorithm": "ML-KEM-1024"
+  },
+  "ML-KEM-512|circl|decaps": {
+    "mean_ms": 0.014600000000000002,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "circl",
+    "algorithm": "ML-KEM-512"
+  },
+  "ML-KEM-512|circl|encaps": {
+    "mean_ms": 0.010599999999999998,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "circl",
+    "algorithm": "ML-KEM-512"
+  },
+  "ML-KEM-512|circl|keygen": {
+    "mean_ms": 0.023599999999999996,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "circl",
+    "algorithm": "ML-KEM-512"
+  },
+  "ML-KEM-768|circl|decaps": {
+    "mean_ms": 0.018999999999999996,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "circl",
+    "algorithm": "ML-KEM-768"
+  },
+  "ML-KEM-768|circl|encaps": {
+    "mean_ms": 0.012899999999999998,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "circl",
+    "algorithm": "ML-KEM-768"
+  },
+  "ML-KEM-768|circl|keygen": {
+    "mean_ms": 0.03939999999999999,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "circl",
+    "algorithm": "ML-KEM-768"
+  }
+}

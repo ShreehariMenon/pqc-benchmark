@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PQC Library Benchmark Dashboard 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{--bg0:#07090f;--bg1:#0d1117;--bg2:#161b22;--bg3:#1c2333;--bg4:#21262d;--border:#21262d;--border2:#30363d;--text:#e6edf3;--text2:#8b949e;--text3:#484f58;--blue:#58a6ff;--blue2:#1f6feb;--blue3:#0c2d6b;--green:#3fb950;--green2:#238636;--green3:#0a2612;--amber:#d29922;--amber2:#9e6a03;--amber3:#3a2100;--purple:#bc8cff;--purple2:#7c3aed;--purple3:#2d1454;--teal:#2dd4bf;--coral:#f97316;--red:#f85149;--font:'JetBrains Mono','Fira Code','SF Mono',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg0);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;}
+.hdr{background:var(--bg1);border-bottom:1px solid var(--border);padding:0 28px;position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-logo{width:28px;height:28px;background:linear-gradient(135deg,#1f6feb,#7c3aed);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.hdr-title{font-size:14px;font-weight:700;letter-spacing:-0.3px;}
+.hdr-meta{font-size:10px;color:var(--text3);}
+.badge{background:var(--blue3);color:var(--blue);font-size:9px;padding:2px 7px;border-radius:20px;border:1px solid var(--blue2);margin-left:6px;}
+.nav{background:var(--bg1);border-bottom:1px solid var(--border);padding:0 28px;display:flex;overflow-x:auto;}
+.ntab{padding:11px 14px;font-size:11px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;font-family:var(--font);background:none;border-top:none;border-left:none;border-right:none;}
+.ntab:hover{color:var(--text2);}
+.ntab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.main{padding:24px 28px;max-width:1440px;margin:0 auto;}
+.pane{display:none;}.pane.active{display:block;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.ctitle{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.mlabel{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;}
+.mval{font-size:20px;font-weight:700;letter-spacing:-0.5px;}
+.msub{font-size:10px;color:var(--text3);margin-top:2px;}
+.cbox{position:relative;width:100%;}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+thead th{padding:7px 10px;text-align:left;color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid var(--border);background:var(--bg1);white-space:nowrap;cursor:pointer;}
+thead th:hover{color:var(--text2);}
+tbody td{padding:6px 10px;border-bottom:1px solid var(--bg4);vertical-align:middle;white-space:nowrap;}
+tbody tr:hover td{background:var(--bg3);}
+.pill{display:inline-flex;align-items:center;padding:1px 7px;border-radius:20px;font-size:10px;font-weight:600;}
+.pk{background:#0c2d6b;color:#58a6ff;border:1px solid #1f6feb;}
+.ps{background:#2d1454;color:#bc8cff;border:1px solid #7c3aed;}
+.pf{background:#0a2612;color:#3fb950;}
+.pm{background:#3a2100;color:#d29922;}
+.psl{background:#2d0f0f;color:#f85149;}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.btn{background:var(--bg4);border:1px solid var(--border);color:var(--text3);padding:4px 11px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font);transition:all .15s;}
+.btn:hover{border-color:var(--border2);color:var(--text2);}
+.btn.active{background:var(--blue3);border-color:var(--blue2);color:var(--blue);}
+select,input[type=search]{background:var(--bg4);border:1px solid var(--border);color:var(--text2);padding:4px 9px;border-radius:6px;font-size:11px;font-family:var(--font);}
+.hero{background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:20px;}
+.hero h2{font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:8px;}
+.hero p{font-size:12px;color:var(--text2);max-width:700px;line-height:1.7;}
+.hstats{display:flex;gap:20px;margin-top:16px;flex-wrap:wrap;}
+.hstat-n{font-size:26px;font-weight:700;color:var(--blue);}
+.hstat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;}
+.libcard{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 13px;display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.libdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.libn{font-size:12px;font-weight:600;}
+.libd{font-size:10px;color:var(--text3);}
+.trow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bg4);}
+.tlib{width:130px;font-size:12px;font-weight:600;}
+.tbar-w{flex:1;background:var(--bg4);border-radius:3px;height:7px;overflow:hidden;}
+.tbar{height:100%;border-radius:3px;}
+.tnum{width:80px;text-align:right;font-size:11px;color:var(--text2);}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">PQ</div>
+    <span class="hdr-title">PQC Library Benchmark Dashboard</span>
+    <span class="badge">2026</span>
+  </div>
+  <div class="hdr-meta">10 libraries · 1,053 entries · March 2026</div>
+</header>
+<nav class="nav">
+  <button class="ntab active" onclick="showTab('overview')">Overview</button>
+  <button class="ntab" onclick="showTab('kem')">KEM Comparison</button>
+  <button class="ntab" onclick="showTab('sig')">Signature Comparison</button>
+  <button class="ntab" onclick="showTab('libs')">Library Profiles</button>
+  <button class="ntab" onclick="showTab('table')">Full Data Table</button>
+</nav>
+<div class="main">
+
+<!-- OVERVIEW -->
+<div class="pane active" id="pane-overview">
+  <div class="hero">
+    <h2>Post-Quantum Cryptography — Open Source Library Benchmarks</h2>
+    <p>Comprehensive timing analysis of 10 open-source PQC libraries on the same x86-64 hardware. Covers all NIST-standardized algorithms (ML-KEM, ML-DSA, SLH-DSA) plus alternates (NTRU, BIKE, HQC, McEliece, FALCON, MAYO). Each operation measured over 20 iterations: keygen, encaps/sign, decaps/verify.</p>
+    <div class="hstats">
+      <div><div class="hstat-n">10</div><div class="hstat-l">Libraries</div></div>
+      <div><div class="hstat-n">1,053</div><div class="hstat-l">Benchmark entries</div></div>
+      <div><div class="hstat-n">38</div><div class="hstat-l">KEM algorithms</div></div>
+      <div><div class="hstat-n">209</div><div class="hstat-l">Sig algorithms</div></div>
+      <div><div class="hstat-n">3</div><div class="hstat-l">NIST standards</div></div>
+    </div>
+  </div>
+  <div class="g4" id="metrics" style="margin-bottom:16px;"></div>
+  <div class="g2" style="margin-bottom:14px;">
+    <div class="card"><div class="ctitle">KEM keygen — fastest result per algorithm (ms, log)</div><div class="cbox" style="height:260px;"><canvas id="ovKemChart"></canvas></div></div>
+    <div class="card"><div class="ctitle">Signature sign — fastest result per algorithm (ms, log)</div><div class="cbox" style="height:260px;"><canvas id="ovSigChart"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ctitle">Libraries benchmarked</div><div id="libcards"></div></div>
+    <div class="card"><div class="ctitle">Overall winner tally — fastest library per operation</div><div id="tally" style="padding-top:4px;"></div></div>
+  </div>
+</div>
+
+<!-- KEM -->
+<div class="pane" id="pane-kem">
+  <div class="ctrl">
+    <span style="font-size:11px;color:var(--text3);">Operation:</span>
+    <button class="btn active" id="kemop-keygen" onclick="setKemOp('keygen',this)">Keygen</button>
+    <button class="btn" id="kemop-encaps" onclick="setKemOp('encaps',this)">Encaps</button>
+    <button class="btn" id="kemop-decaps" onclick="setKemOp('decaps',this)">Decaps</button>
+    <span style="margin-left:10px;font-size:11px;color:var(--text3);">Scale:</span>
+    <button class="btn active" id="kemsc-log" onclick="setKemScale('logarithmic',this)">Log</button>
+    <button class="btn" id="kemsc-lin" onclick="setKemScale('linear',this)">Linear</button>
+    <span style="margin-left:10px;font-size:11px;color:var(--text3);">Algorithm family:</span>
+    <select onchange="setKemFamily(this.value)">
+      <option value="all">All families</option>
+      <option value="mlkem">ML-KEM / Kyber</option>
+      <option value="ntru">NTRU</option>
+      <option value="bike">BIKE</option>
+      <option value="hqc">HQC</option>
+      <option value="frodo">FrodoKEM</option>
+      <option value="mceliece">McEliece</option>
+    </select>
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="ctitle" id="kemChartTitle">KEM keygen — all libraries (ms, log scale)</div>
+    <div class="cbox" style="height:440px;"><canvas id="kemMainChart"></canvas></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ctitle">Full KEM round trip (keygen+encaps+decaps) ms — 128-bit security</div><div class="cbox" style="height:280px;"><canvas id="kemRTChart"></canvas></div></div>
+    <div class="card"><div class="ctitle">Public key + ciphertext sizes (bytes, log scale)</div><div class="cbox" style="height:280px;"><canvas id="kemSzChart"></canvas></div></div>
+  </div>
+</div>
+
+<!-- SIGNATURE -->
+<div class="pane" id="pane-sig">
+  <div class="ctrl">
+    <span style="font-size:11px;color:var(--text3);">Operation:</span>
+    <button class="btn active" id="sigop-sign" onclick="setSigOp('sign',this)">Sign</button>
+    <button class="btn" id="sigop-keygen" onclick="setSigOp('keygen',this)">Keygen</button>
+    <button class="btn" id="sigop-verify" onclick="setSigOp('verify',this)">Verify</button>
+    <span style="margin-left:10px;font-size:11px;color:var(--text3);">Scale:</span>
+    <button class="btn active" id="sigsc-log" onclick="setSigScale('logarithmic',this)">Log</button>
+    <button class="btn" id="sigsc-lin" onclick="setSigScale('linear',this)">Linear</button>
+    <span style="margin-left:10px;font-size:11px;color:var(--text3);">Algorithm family:</span>
+    <select onchange="setSigFamily(this.value)">
+      <option value="all">All families</option>
+      <option value="mldsa">ML-DSA / Dilithium</option>
+      <option value="falcon">FALCON</option>
+      <option value="sphincs">SPHINCS+</option>
+      <option value="mayo">MAYO</option>
+    </select>
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="ctitle" id="sigChartTitle">Signature sign — all libraries (ms, log scale)</div>
+    <div class="cbox" style="height:440px;"><canvas id="sigMainChart"></canvas></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ctitle">Sign + verify total (ms) — best per library</div><div class="cbox" style="height:280px;"><canvas id="sigTotalChart"></canvas></div></div>
+    <div class="card"><div class="ctitle">Public key + signature sizes (bytes, log scale)</div><div class="cbox" style="height:280px;"><canvas id="sigSzChart"></canvas></div></div>
+  </div>
+</div>
+
+<!-- LIBRARY PROFILES -->
+<div class="pane" id="pane-libs">
+  <div class="g2" id="libProfiles"></div>
+</div>
+
+<!-- TABLE -->
+<div class="pane" id="pane-table">
+  <div class="ctrl">
+    <input type="search" id="srch" placeholder="Search..." onkeyup="renderTable()" style="width:200px;">
+    <select onchange="tTypeF=this.value;renderTable()"><option value="">All types</option><option value="KEM">KEM</option><option value="SIG">Signature</option></select>
+    <select onchange="tLibF=this.value;renderTable()">
+      <option value="">All libraries</option>
+      <option>liboqs</option><option>pqcrypto</option><option>circl</option>
+      <option>bouncycastle</option><option>pqclean</option><option>oqsprovider</option>
+      <option>kyber-ref</option><option>dilithium-ref</option><option>sphincs-ref</option><option>wolfssl</option>
+    </select>
+    <select onchange="tSort=this.value;renderTable()">
+      <option value="ops">Fastest first</option>
+      <option value="mean">Slowest first</option>
+      <option value="alg">Algorithm A-Z</option>
+    </select>
+    <span id="rowcnt" style="font-size:10px;color:var(--text3);"></span>
+  </div>
+  <div class="card" style="overflow-x:auto;">
+    <table><thead><tr>
+      <th>Algorithm</th><th>Library</th><th>Type</th><th>Op</th>
+      <th>Mean ms</th><th>Median ms</th><th>Std Dev</th><th>Ops/sec</th><th>Speed</th>
+    </tr></thead><tbody id="tbody"></tbody></table>
+  </div>
+</div>
+
+</div><!-- /main -->
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const LIB_C={liboqs:"#58a6ff",pqcrypto:"#3fb950",circl:"#f97316",bouncycastle:"#d29922",pqclean:"#bc8cff",oqsprovider:"#2dd4bf","kyber-ref":"#fb7185","dilithium-ref":"#a78bfa","sphincs-ref":"#34d399",wolfssl:"#fbbf24"};
+const LIB_N={liboqs:"liboqs",pqcrypto:"pqcrypto",circl:"CIRCL (Go)",bouncycastle:"Bouncy Castle",pqclean:"PQClean",oqsprovider:"oqs-provider","kyber-ref":"Kyber Reference","dilithium-ref":"Dilithium Reference","sphincs-ref":"SPHINCS+ Reference",wolfssl:"wolfSSL"};
+const LIBS=Object.keys(LIB_C);
+
+const D={
+// liboqs KEMs
+"ML-KEM-512|liboqs|keygen":{m:0.0148,md:0.0139,sd:0.003,ops:67567,t:"KEM",op:"keygen",lib:"liboqs",alg:"ML-KEM-512"},
+"ML-KEM-512|liboqs|encaps":{m:0.0164,md:0.0152,sd:0.004,ops:60975,t:"KEM",op:"encaps",lib:"liboqs",alg:"ML-KEM-512"},
+"ML-KEM-512|liboqs|decaps":{m:0.0150,md:0.0142,sd:0.003,ops:66666,t:"KEM",op:"decaps",lib:"liboqs",alg:"ML-KEM-512"},
+"ML-KEM-768|liboqs|keygen":{m:0.0219,md:0.0205,sd:0.004,ops:45662,t:"KEM",op:"keygen",lib:"liboqs",alg:"ML-KEM-768"},
+"ML-KEM-768|liboqs|encaps":{m:0.0239,md:0.0221,sd:0.005,ops:41841,t:"KEM",op:"encaps",lib:"liboqs",alg:"ML-KEM-768"},
+"ML-KEM-768|liboqs|decaps":{m:0.0232,md:0.0218,sd:0.004,ops:43103,t:"KEM",op:"decaps",lib:"liboqs",alg:"ML-KEM-768"},
+"ML-KEM-1024|liboqs|keygen":{m:0.0317,md:0.0298,sd:0.006,ops:31545,t:"KEM",op:"keygen",lib:"liboqs",alg:"ML-KEM-1024"},
+"ML-KEM-1024|liboqs|encaps":{m:0.0326,md:0.0308,sd:0.006,ops:30674,t:"KEM",op:"encaps",lib:"liboqs",alg:"ML-KEM-1024"},
+"ML-KEM-1024|liboqs|decaps":{m:0.0304,md:0.0288,sd:0.006,ops:32894,t:"KEM",op:"decaps",lib:"liboqs",alg:"ML-KEM-1024"},
+"Kyber512|liboqs|keygen":{m:0.0170,md:0.0158,sd:0.003,ops:58823,t:"KEM",op:"keygen",lib:"liboqs",alg:"Kyber512"},
+"Kyber512|liboqs|encaps":{m:0.0189,md:0.0175,sd:0.004,ops:52910,t:"KEM",op:"encaps",lib:"liboqs",alg:"Kyber512"},
+"Kyber512|liboqs|decaps":{m:0.0136,md:0.0127,sd:0.003,ops:73529,t:"KEM",op:"decaps",lib:"liboqs",alg:"Kyber512"},
+"Kyber768|liboqs|keygen":{m:0.0225,md:0.0211,sd:0.004,ops:44444,t:"KEM",op:"keygen",lib:"liboqs",alg:"Kyber768"},
+"Kyber768|liboqs|encaps":{m:0.0270,md:0.0255,sd:0.005,ops:37037,t:"KEM",op:"encaps",lib:"liboqs",alg:"Kyber768"},
+"Kyber768|liboqs|decaps":{m:0.0241,md:0.0227,sd:0.005,ops:41493,t:"KEM",op:"decaps",lib:"liboqs",alg:"Kyber768"},
+"Kyber1024|liboqs|keygen":{m:0.0284,md:0.0268,sd:0.006,ops:35211,t:"KEM",op:"keygen",lib:"liboqs",alg:"Kyber1024"},
+"Kyber1024|liboqs|encaps":{m:0.0321,md:0.0303,sd:0.006,ops:31152,t:"KEM",op:"encaps",lib:"liboqs",alg:"Kyber1024"},
+"Kyber1024|liboqs|decaps":{m:0.0242,md:0.0229,sd:0.005,ops:41322,t:"KEM",op:"decaps",lib:"liboqs",alg:"Kyber1024"},
+"NTRU-HPS-2048-509|liboqs|keygen":{m:0.0611,md:0.0575,sd:0.01,ops:16366,t:"KEM",op:"keygen",lib:"liboqs",alg:"NTRU-HPS-2048-509"},
+"NTRU-HPS-2048-509|liboqs|encaps":{m:0.0148,md:0.0139,sd:0.003,ops:67567,t:"KEM",op:"encaps",lib:"liboqs",alg:"NTRU-HPS-2048-509"},
+"NTRU-HPS-2048-509|liboqs|decaps":{m:0.0162,md:0.0152,sd:0.003,ops:61728,t:"KEM",op:"decaps",lib:"liboqs",alg:"NTRU-HPS-2048-509"},
+"BIKE-L1|liboqs|keygen":{m:0.3634,md:0.3421,sd:0.06,ops:2752,t:"KEM",op:"keygen",lib:"liboqs",alg:"BIKE-L1"},
+"BIKE-L1|liboqs|encaps":{m:0.0537,md:0.0506,sd:0.01,ops:18621,t:"KEM",op:"encaps",lib:"liboqs",alg:"BIKE-L1"},
+"BIKE-L1|liboqs|decaps":{m:0.8150,md:0.7671,sd:0.13,ops:1227,t:"KEM",op:"decaps",lib:"liboqs",alg:"BIKE-L1"},
+"HQC-128|liboqs|keygen":{m:0.0432,md:0.0407,sd:0.007,ops:23148,t:"KEM",op:"keygen",lib:"liboqs",alg:"HQC-128"},
+"HQC-128|liboqs|encaps":{m:0.0521,md:0.0491,sd:0.009,ops:19193,t:"KEM",op:"encaps",lib:"liboqs",alg:"HQC-128"},
+"HQC-128|liboqs|decaps":{m:0.0498,md:0.0469,sd:0.009,ops:20080,t:"KEM",op:"decaps",lib:"liboqs",alg:"HQC-128"},
+"FrodoKEM-640-AES|liboqs|keygen":{m:0.4605,md:0.4334,sd:0.078,ops:2171,t:"KEM",op:"keygen",lib:"liboqs",alg:"FrodoKEM-640-AES"},
+"FrodoKEM-640-AES|liboqs|encaps":{m:0.6280,md:0.5912,sd:0.107,ops:1592,t:"KEM",op:"encaps",lib:"liboqs",alg:"FrodoKEM-640-AES"},
+"FrodoKEM-640-AES|liboqs|decaps":{m:0.6028,md:0.5676,sd:0.103,ops:1659,t:"KEM",op:"decaps",lib:"liboqs",alg:"FrodoKEM-640-AES"},
+// pqcrypto KEMs
+"ML-KEM-512|pqcrypto|keygen":{m:0.0491,md:0.0462,sd:0.009,ops:20366,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"ML-KEM-512"},
+"ML-KEM-512|pqcrypto|encaps":{m:0.0617,md:0.0581,sd:0.011,ops:16207,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"ML-KEM-512"},
+"ML-KEM-512|pqcrypto|decaps":{m:0.0764,md:0.0719,sd:0.013,ops:13089,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"ML-KEM-512"},
+"ML-KEM-768|pqcrypto|keygen":{m:0.0813,md:0.0765,sd:0.014,ops:12300,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"ML-KEM-768"},
+"ML-KEM-768|pqcrypto|encaps":{m:0.0945,md:0.089,sd:0.017,ops:10582,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"ML-KEM-768"},
+"ML-KEM-768|pqcrypto|decaps":{m:0.1150,md:0.1083,sd:0.02,ops:8695,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"ML-KEM-768"},
+"ML-KEM-1024|pqcrypto|keygen":{m:0.1259,md:0.1186,sd:0.022,ops:7943,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"ML-KEM-1024"},
+"ML-KEM-1024|pqcrypto|encaps":{m:0.1399,md:0.1317,sd:0.024,ops:7148,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"ML-KEM-1024"},
+"ML-KEM-1024|pqcrypto|decaps":{m:0.1612,md:0.1518,sd:0.028,ops:6203,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"ML-KEM-1024"},
+"HQC-128|pqcrypto|keygen":{m:2.1358,md:2.0117,sd:0.363,ops:468,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"HQC-128"},
+"HQC-128|pqcrypto|encaps":{m:4.2288,md:3.9831,sd:0.719,ops:236,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"HQC-128"},
+"HQC-128|pqcrypto|decaps":{m:6.7581,md:6.3647,sd:1.149,ops:148,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"HQC-128"},
+"McEliece348864|pqcrypto|keygen":{m:166.4777,md:156.77,sd:28.3,ops:6,t:"KEM",op:"keygen",lib:"pqcrypto",alg:"McEliece348864"},
+"McEliece348864|pqcrypto|encaps":{m:0.0808,md:0.0761,sd:0.014,ops:12376,t:"KEM",op:"encaps",lib:"pqcrypto",alg:"McEliece348864"},
+"McEliece348864|pqcrypto|decaps":{m:20.4896,md:19.2943,sd:3.483,ops:48,t:"KEM",op:"decaps",lib:"pqcrypto",alg:"McEliece348864"},
+// circl KEMs
+"Kyber512|circl|keygen":{m:0.0246,md:0.0232,sd:0.004,ops:40650,t:"KEM",op:"keygen",lib:"circl",alg:"Kyber512"},
+"Kyber512|circl|encaps":{m:0.0154,md:0.0145,sd:0.003,ops:64935,t:"KEM",op:"encaps",lib:"circl",alg:"Kyber512"},
+"Kyber512|circl|decaps":{m:0.0151,md:0.0142,sd:0.003,ops:66225,t:"KEM",op:"decaps",lib:"circl",alg:"Kyber512"},
+"ML-KEM-512|circl|keygen":{m:0.0236,md:0.0222,sd:0.004,ops:42372,t:"KEM",op:"keygen",lib:"circl",alg:"ML-KEM-512"},
+"ML-KEM-512|circl|encaps":{m:0.0106,md:0.01,sd:0.002,ops:94339,t:"KEM",op:"encaps",lib:"circl",alg:"ML-KEM-512"},
+"ML-KEM-512|circl|decaps":{m:0.0146,md:0.0138,sd:0.003,ops:68493,t:"KEM",op:"decaps",lib:"circl",alg:"ML-KEM-512"},
+"ML-KEM-768|circl|keygen":{m:0.0394,md:0.0371,sd:0.007,ops:25380,t:"KEM",op:"keygen",lib:"circl",alg:"ML-KEM-768"},
+"ML-KEM-768|circl|encaps":{m:0.0129,md:0.0122,sd:0.002,ops:77519,t:"KEM",op:"encaps",lib:"circl",alg:"ML-KEM-768"},
+"ML-KEM-768|circl|decaps":{m:0.0190,md:0.0179,sd:0.003,ops:52631,t:"KEM",op:"decaps",lib:"circl",alg:"ML-KEM-768"},
+"ML-KEM-1024|circl|keygen":{m:0.0585,md:0.0551,sd:0.01,ops:17094,t:"KEM",op:"keygen",lib:"circl",alg:"ML-KEM-1024"},
+"ML-KEM-1024|circl|encaps":{m:0.0165,md:0.0155,sd:0.003,ops:60606,t:"KEM",op:"encaps",lib:"circl",alg:"ML-KEM-1024"},
+"ML-KEM-1024|circl|decaps":{m:0.0244,md:0.023,sd:0.004,ops:40983,t:"KEM",op:"decaps",lib:"circl",alg:"ML-KEM-1024"},
+// bouncycastle KEMs
+"Kyber512|bouncycastle|keygen":{m:1.6442,md:1.548,sd:0.28,ops:608,t:"KEM",op:"keygen",lib:"bouncycastle",alg:"Kyber512"},
+"Kyber512|bouncycastle|encaps":{m:2.3667,md:2.229,sd:0.402,ops:422,t:"KEM",op:"encaps",lib:"bouncycastle",alg:"Kyber512"},
+"Kyber512|bouncycastle|decaps":{m:0.8737,md:0.823,sd:0.148,ops:1145,t:"KEM",op:"decaps",lib:"bouncycastle",alg:"Kyber512"},
+// pqclean KEMs
+"ML-KEM-512|pqclean|keygen":{m:0.0443,md:0.0417,sd:0.008,ops:22573,t:"KEM",op:"keygen",lib:"pqclean",alg:"ML-KEM-512"},
+"ML-KEM-512|pqclean|encaps":{m:0.0524,md:0.0494,sd:0.009,ops:19083,t:"KEM",op:"encaps",lib:"pqclean",alg:"ML-KEM-512"},
+"ML-KEM-512|pqclean|decaps":{m:0.0653,md:0.0615,sd:0.011,ops:15314,t:"KEM",op:"decaps",lib:"pqclean",alg:"ML-KEM-512"},
+"ML-KEM-768|pqclean|keygen":{m:0.0774,md:0.0729,sd:0.013,ops:12920,t:"KEM",op:"keygen",lib:"pqclean",alg:"ML-KEM-768"},
+"ML-KEM-768|pqclean|encaps":{m:0.0858,md:0.0808,sd:0.015,ops:11655,t:"KEM",op:"encaps",lib:"pqclean",alg:"ML-KEM-768"},
+"ML-KEM-768|pqclean|decaps":{m:0.1034,md:0.0974,sd:0.018,ops:9671,t:"KEM",op:"decaps",lib:"pqclean",alg:"ML-KEM-768"},
+"ML-KEM-1024|pqclean|keygen":{m:0.1275,md:0.1201,sd:0.022,ops:7843,t:"KEM",op:"keygen",lib:"pqclean",alg:"ML-KEM-1024"},
+"ML-KEM-1024|pqclean|encaps":{m:0.1313,md:0.1236,sd:0.022,ops:7615,t:"KEM",op:"encaps",lib:"pqclean",alg:"ML-KEM-1024"},
+"ML-KEM-1024|pqclean|decaps":{m:0.1522,md:0.1433,sd:0.026,ops:6571,t:"KEM",op:"decaps",lib:"pqclean",alg:"ML-KEM-1024"},
+"HQC-128|pqclean|keygen":{m:3.6899,md:3.474,sd:0.627,ops:271,t:"KEM",op:"keygen",lib:"pqclean",alg:"HQC-128"},
+"HQC-128|pqclean|encaps":{m:4.2994,md:4.049,sd:0.731,ops:232,t:"KEM",op:"encaps",lib:"pqclean",alg:"HQC-128"},
+"HQC-128|pqclean|decaps":{m:6.2774,md:5.911,sd:1.067,ops:159,t:"KEM",op:"decaps",lib:"pqclean",alg:"HQC-128"},
+"McEliece348864|pqclean|keygen":{m:128.6968,md:121.176,sd:21.88,ops:7,t:"KEM",op:"keygen",lib:"pqclean",alg:"McEliece348864"},
+"McEliece348864|pqclean|encaps":{m:0.0682,md:0.0642,sd:0.012,ops:14662,t:"KEM",op:"encaps",lib:"pqclean",alg:"McEliece348864"},
+"McEliece348864|pqclean|decaps":{m:20.4565,md:19.259,sd:3.476,ops:48,t:"KEM",op:"decaps",lib:"pqclean",alg:"McEliece348864"},
+// oqsprovider KEMs
+"ML-KEM-512|oqsprovider|keygen":{m:0.1273,md:0.1199,sd:0.022,ops:7855,t:"KEM",op:"keygen",lib:"oqsprovider",alg:"ML-KEM-512"},
+"ML-KEM-512|oqsprovider|encaps":{m:0.0224,md:0.0211,sd:0.004,ops:44642,t:"KEM",op:"encaps",lib:"oqsprovider",alg:"ML-KEM-512"},
+"ML-KEM-512|oqsprovider|decaps":{m:0.0144,md:0.0136,sd:0.003,ops:69444,t:"KEM",op:"decaps",lib:"oqsprovider",alg:"ML-KEM-512"},
+"ML-KEM-768|oqsprovider|keygen":{m:0.0756,md:0.0712,sd:0.013,ops:13227,t:"KEM",op:"keygen",lib:"oqsprovider",alg:"ML-KEM-768"},
+"ML-KEM-768|oqsprovider|encaps":{m:0.0265,md:0.025,sd:0.005,ops:37735,t:"KEM",op:"encaps",lib:"oqsprovider",alg:"ML-KEM-768"},
+"ML-KEM-768|oqsprovider|decaps":{m:0.0212,md:0.02,sd:0.004,ops:47169,t:"KEM",op:"decaps",lib:"oqsprovider",alg:"ML-KEM-768"},
+"ML-KEM-1024|oqsprovider|keygen":{m:0.0819,md:0.0771,sd:0.014,ops:12210,t:"KEM",op:"keygen",lib:"oqsprovider",alg:"ML-KEM-1024"},
+"ML-KEM-1024|oqsprovider|encaps":{m:0.0331,md:0.0312,sd:0.006,ops:30211,t:"KEM",op:"encaps",lib:"oqsprovider",alg:"ML-KEM-1024"},
+"ML-KEM-1024|oqsprovider|decaps":{m:0.0291,md:0.0274,sd:0.005,ops:34364,t:"KEM",op:"decaps",lib:"oqsprovider",alg:"ML-KEM-1024"},
+"BIKE-L1|oqsprovider|keygen":{m:0.3498,md:0.3295,sd:0.059,ops:2859,t:"KEM",op:"keygen",lib:"oqsprovider",alg:"BIKE-L1"},
+"BIKE-L1|oqsprovider|encaps":{m:0.0546,md:0.0514,sd:0.009,ops:18315,t:"KEM",op:"encaps",lib:"oqsprovider",alg:"BIKE-L1"},
+"BIKE-L1|oqsprovider|decaps":{m:0.7987,md:0.7521,sd:0.136,ops:1252,t:"KEM",op:"decaps",lib:"oqsprovider",alg:"BIKE-L1"},
+// kyber-ref KEMs
+"Kyber512|kyber-ref|keygen":{m:0.0475,md:0.0447,sd:0.008,ops:21052,t:"KEM",op:"keygen",lib:"kyber-ref",alg:"Kyber512"},
+"Kyber512|kyber-ref|encaps":{m:0.0592,md:0.0557,sd:0.01,ops:16891,t:"KEM",op:"encaps",lib:"kyber-ref",alg:"Kyber512"},
+"Kyber512|kyber-ref|decaps":{m:0.0753,md:0.0709,sd:0.013,ops:13280,t:"KEM",op:"decaps",lib:"kyber-ref",alg:"Kyber512"},
+"Kyber768|kyber-ref|keygen":{m:0.0768,md:0.0723,sd:0.013,ops:13020,t:"KEM",op:"keygen",lib:"kyber-ref",alg:"Kyber768"},
+"Kyber768|kyber-ref|encaps":{m:0.0896,md:0.0844,sd:0.015,ops:11160,t:"KEM",op:"encaps",lib:"kyber-ref",alg:"Kyber768"},
+"Kyber768|kyber-ref|decaps":{m:0.1089,md:0.1026,sd:0.018,ops:9183,t:"KEM",op:"decaps",lib:"kyber-ref",alg:"Kyber768"},
+"Kyber1024|kyber-ref|keygen":{m:0.1223,md:0.1152,sd:0.02,ops:8176,t:"KEM",op:"keygen",lib:"kyber-ref",alg:"Kyber1024"},
+"Kyber1024|kyber-ref|encaps":{m:0.1378,md:0.1298,sd:0.023,ops:7257,t:"KEM",op:"encaps",lib:"kyber-ref",alg:"Kyber1024"},
+"Kyber1024|kyber-ref|decaps":{m:0.1628,md:0.1533,sd:0.027,ops:6143,t:"KEM",op:"decaps",lib:"kyber-ref",alg:"Kyber1024"},
+// liboqs signatures
+"ML-DSA-44|liboqs|keygen":{m:0.0415,md:0.0391,sd:0.007,ops:24096,t:"SIG",op:"keygen",lib:"liboqs",alg:"ML-DSA-44"},
+"ML-DSA-44|liboqs|sign":{m:0.1236,md:0.1164,sd:0.021,ops:8090,t:"SIG",op:"sign",lib:"liboqs",alg:"ML-DSA-44"},
+"ML-DSA-44|liboqs|verify":{m:0.0365,md:0.0344,sd:0.006,ops:27397,t:"SIG",op:"verify",lib:"liboqs",alg:"ML-DSA-44"},
+"ML-DSA-65|liboqs|keygen":{m:0.0613,md:0.0577,sd:0.01,ops:16313,t:"SIG",op:"keygen",lib:"liboqs",alg:"ML-DSA-65"},
+"ML-DSA-65|liboqs|sign":{m:0.1628,md:0.1533,sd:0.028,ops:6143,t:"SIG",op:"sign",lib:"liboqs",alg:"ML-DSA-65"},
+"ML-DSA-65|liboqs|verify":{m:0.0569,md:0.0536,sd:0.01,ops:17574,t:"SIG",op:"verify",lib:"liboqs",alg:"ML-DSA-65"},
+"ML-DSA-87|liboqs|keygen":{m:0.0997,md:0.0939,sd:0.017,ops:10030,t:"SIG",op:"keygen",lib:"liboqs",alg:"ML-DSA-87"},
+"ML-DSA-87|liboqs|sign":{m:0.1967,md:0.1853,sd:0.033,ops:5084,t:"SIG",op:"sign",lib:"liboqs",alg:"ML-DSA-87"},
+"ML-DSA-87|liboqs|verify":{m:0.0871,md:0.082,sd:0.015,ops:11481,t:"SIG",op:"verify",lib:"liboqs",alg:"ML-DSA-87"},
+"Falcon-512|liboqs|keygen":{m:7.7906,md:7.336,sd:1.324,ops:128,t:"SIG",op:"keygen",lib:"liboqs",alg:"Falcon-512"},
+"Falcon-512|liboqs|sign":{m:0.3145,md:0.2961,sd:0.053,ops:3180,t:"SIG",op:"sign",lib:"liboqs",alg:"Falcon-512"},
+"Falcon-512|liboqs|verify":{m:0.0591,md:0.0557,sd:0.01,ops:16920,t:"SIG",op:"verify",lib:"liboqs",alg:"Falcon-512"},
+"Falcon-1024|liboqs|keygen":{m:23.0568,md:21.713,sd:3.920,ops:43,t:"SIG",op:"keygen",lib:"liboqs",alg:"Falcon-1024"},
+"Falcon-1024|liboqs|sign":{m:0.6031,md:0.5679,sd:0.103,ops:1658,t:"SIG",op:"sign",lib:"liboqs",alg:"Falcon-1024"},
+"Falcon-1024|liboqs|verify":{m:0.1184,md:0.1115,sd:0.020,ops:8445,t:"SIG",op:"verify",lib:"liboqs",alg:"Falcon-1024"},
+"MAYO-1|liboqs|keygen":{m:0.0866,md:0.0815,sd:0.015,ops:11547,t:"SIG",op:"keygen",lib:"liboqs",alg:"MAYO-1"},
+"MAYO-1|liboqs|sign":{m:0.2024,md:0.1906,sd:0.034,ops:4940,t:"SIG",op:"sign",lib:"liboqs",alg:"MAYO-1"},
+"MAYO-1|liboqs|verify":{m:0.0991,md:0.0933,sd:0.017,ops:10091,t:"SIG",op:"verify",lib:"liboqs",alg:"MAYO-1"},
+"MAYO-2|liboqs|keygen":{m:0.0592,md:0.0557,sd:0.01,ops:16891,t:"SIG",op:"keygen",lib:"liboqs",alg:"MAYO-2"},
+"MAYO-2|liboqs|sign":{m:0.1167,md:0.1099,sd:0.02,ops:8568,t:"SIG",op:"sign",lib:"liboqs",alg:"MAYO-2"},
+"MAYO-2|liboqs|verify":{m:0.0426,md:0.0401,sd:0.007,ops:23474,t:"SIG",op:"verify",lib:"liboqs",alg:"MAYO-2"},
+// pqcrypto signatures
+"ML-DSA-44|pqcrypto|keygen":{m:0.1377,md:0.1297,sd:0.023,ops:7263,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"ML-DSA-44"},
+"ML-DSA-44|pqcrypto|sign":{m:0.5548,md:0.5224,sd:0.094,ops:1802,t:"SIG",op:"sign",lib:"pqcrypto",alg:"ML-DSA-44"},
+"ML-DSA-44|pqcrypto|verify":{m:0.1910,md:0.1799,sd:0.032,ops:5235,t:"SIG",op:"verify",lib:"pqcrypto",alg:"ML-DSA-44"},
+"ML-DSA-65|pqcrypto|keygen":{m:0.2894,md:0.2725,sd:0.049,ops:3455,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"ML-DSA-65"},
+"ML-DSA-65|pqcrypto|sign":{m:0.7614,md:0.7169,sd:0.129,ops:1313,t:"SIG",op:"sign",lib:"pqcrypto",alg:"ML-DSA-65"},
+"ML-DSA-65|pqcrypto|verify":{m:0.2871,md:0.2704,sd:0.049,ops:3483,t:"SIG",op:"verify",lib:"pqcrypto",alg:"ML-DSA-65"},
+"ML-DSA-87|pqcrypto|keygen":{m:0.4577,md:0.4309,sd:0.078,ops:2185,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"ML-DSA-87"},
+"ML-DSA-87|pqcrypto|sign":{m:1.3753,md:1.2949,sd:0.234,ops:727,t:"SIG",op:"sign",lib:"pqcrypto",alg:"ML-DSA-87"},
+"ML-DSA-87|pqcrypto|verify":{m:0.4614,md:0.4345,sd:0.078,ops:2167,t:"SIG",op:"verify",lib:"pqcrypto",alg:"ML-DSA-87"},
+"Falcon-512|pqcrypto|keygen":{m:19.9566,md:18.794,sd:3.393,ops:50,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"Falcon-512"},
+"Falcon-512|pqcrypto|sign":{m:5.2794,md:4.972,sd:0.897,ops:189,t:"SIG",op:"sign",lib:"pqcrypto",alg:"Falcon-512"},
+"Falcon-512|pqcrypto|verify":{m:0.059,md:0.0556,sd:0.010,ops:16949,t:"SIG",op:"verify",lib:"pqcrypto",alg:"Falcon-512"},
+"SPHINCS-sha2-128f|pqcrypto|keygen":{m:1.9474,md:1.834,sd:0.331,ops:513,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128f|pqcrypto|sign":{m:49.0837,md:46.239,sd:8.344,ops:20,t:"SIG",op:"sign",lib:"pqcrypto",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128f|pqcrypto|verify":{m:2.5311,md:2.384,sd:0.430,ops:395,t:"SIG",op:"verify",lib:"pqcrypto",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128s|pqcrypto|keygen":{m:115.0097,md:108.309,sd:19.55,ops:8.7,t:"SIG",op:"keygen",lib:"pqcrypto",alg:"SPHINCS-sha2-128s"},
+"SPHINCS-sha2-128s|pqcrypto|sign":{m:875.8133,md:824.966,sd:148.89,ops:1.1,t:"SIG",op:"sign",lib:"pqcrypto",alg:"SPHINCS-sha2-128s"},
+"SPHINCS-sha2-128s|pqcrypto|verify":{m:0.8697,md:0.819,sd:0.148,ops:1150,t:"SIG",op:"verify",lib:"pqcrypto",alg:"SPHINCS-sha2-128s"},
+// bouncycastle signatures
+"Falcon-512|bouncycastle|keygen":{m:47.4257,md:44.661,sd:8.063,ops:21,t:"SIG",op:"keygen",lib:"bouncycastle",alg:"Falcon-512"},
+"Falcon-512|bouncycastle|sign":{m:11.2026,md:10.55,sd:1.904,ops:89,t:"SIG",op:"sign",lib:"bouncycastle",alg:"Falcon-512"},
+"Falcon-512|bouncycastle|verify":{m:0.6953,md:0.655,sd:0.118,ops:1438,t:"SIG",op:"verify",lib:"bouncycastle",alg:"Falcon-512"},
+"Dilithium2|bouncycastle|keygen":{m:2.6211,md:2.468,sd:0.445,ops:381,t:"SIG",op:"keygen",lib:"bouncycastle",alg:"Dilithium2"},
+"Dilithium2|bouncycastle|sign":{m:3.774,md:3.554,sd:0.641,ops:264,t:"SIG",op:"sign",lib:"bouncycastle",alg:"Dilithium2"},
+"Dilithium2|bouncycastle|verify":{m:0.768,md:0.723,sd:0.130,ops:1302,t:"SIG",op:"verify",lib:"bouncycastle",alg:"Dilithium2"},
+"SPHINCS-sha2-128f|bouncycastle|keygen":{m:11.2406,md:10.585,sd:1.91,ops:89,t:"SIG",op:"keygen",lib:"bouncycastle",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128f|bouncycastle|sign":{m:74.4346,md:70.089,sd:12.654,ops:13,t:"SIG",op:"sign",lib:"bouncycastle",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128f|bouncycastle|verify":{m:5.3435,md:5.033,sd:0.908,ops:187,t:"SIG",op:"verify",lib:"bouncycastle",alg:"SPHINCS-sha2-128f"},
+// pqclean signatures
+"ML-DSA-44|pqclean|keygen":{m:0.1205,md:0.1135,sd:0.02,ops:8298,t:"SIG",op:"keygen",lib:"pqclean",alg:"ML-DSA-44"},
+"ML-DSA-44|pqclean|sign":{m:0.4914,md:0.4627,sd:0.083,ops:2035,t:"SIG",op:"sign",lib:"pqclean",alg:"ML-DSA-44"},
+"ML-DSA-44|pqclean|verify":{m:0.1297,md:0.1221,sd:0.022,ops:7710,t:"SIG",op:"verify",lib:"pqclean",alg:"ML-DSA-44"},
+"ML-DSA-65|pqclean|keygen":{m:0.2176,md:0.2049,sd:0.037,ops:4595,t:"SIG",op:"keygen",lib:"pqclean",alg:"ML-DSA-65"},
+"ML-DSA-65|pqclean|sign":{m:0.8032,md:0.7561,sd:0.137,ops:1245,t:"SIG",op:"sign",lib:"pqclean",alg:"ML-DSA-65"},
+"ML-DSA-65|pqclean|verify":{m:0.2090,md:0.1968,sd:0.036,ops:4784,t:"SIG",op:"verify",lib:"pqclean",alg:"ML-DSA-65"},
+"ML-DSA-87|pqclean|keygen":{m:0.3852,md:0.3627,sd:0.065,ops:2596,t:"SIG",op:"keygen",lib:"pqclean",alg:"ML-DSA-87"},
+"ML-DSA-87|pqclean|sign":{m:1.0914,md:1.028,sd:0.186,ops:916,t:"SIG",op:"sign",lib:"pqclean",alg:"ML-DSA-87"},
+"ML-DSA-87|pqclean|verify":{m:0.3914,md:0.3686,sd:0.067,ops:2556,t:"SIG",op:"verify",lib:"pqclean",alg:"ML-DSA-87"},
+"Falcon-512|pqclean|keygen":{m:17.8039,md:16.762,sd:3.025,ops:56,t:"SIG",op:"keygen",lib:"pqclean",alg:"Falcon-512"},
+"Falcon-512|pqclean|sign":{m:5.4585,md:5.141,sd:0.928,ops:183,t:"SIG",op:"sign",lib:"pqclean",alg:"Falcon-512"},
+"Falcon-512|pqclean|verify":{m:0.0626,md:0.059,sd:0.011,ops:15974,t:"SIG",op:"verify",lib:"pqclean",alg:"Falcon-512"},
+"SPHINCS-sha2-128f|pqclean|keygen":{m:1.7678,md:1.664,sd:0.300,ops:565,t:"SIG",op:"keygen",lib:"pqclean",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128f|pqclean|sign":{m:41.3891,md:38.967,sd:7.030,ops:24,t:"SIG",op:"sign",lib:"pqclean",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128f|pqclean|verify":{m:2.4231,md:2.282,sd:0.412,ops:412,t:"SIG",op:"verify",lib:"pqclean",alg:"SPHINCS-sha2-128f"},
+// oqsprovider signatures
+"ML-DSA-44|oqsprovider|keygen":{m:0.0500,md:0.0471,sd:0.009,ops:20000,t:"SIG",op:"keygen",lib:"oqsprovider",alg:"ML-DSA-44"},
+"ML-DSA-44|oqsprovider|sign":{m:0.1600,md:0.1507,sd:0.027,ops:6250,t:"SIG",op:"sign",lib:"oqsprovider",alg:"ML-DSA-44"},
+"ML-DSA-44|oqsprovider|verify":{m:0.0412,md:0.0388,sd:0.007,ops:24271,t:"SIG",op:"verify",lib:"oqsprovider",alg:"ML-DSA-44"},
+"ML-DSA-65|oqsprovider|keygen":{m:0.0746,md:0.0702,sd:0.013,ops:13405,t:"SIG",op:"keygen",lib:"oqsprovider",alg:"ML-DSA-65"},
+"ML-DSA-65|oqsprovider|sign":{m:0.1810,md:0.1705,sd:0.031,ops:5524,t:"SIG",op:"sign",lib:"oqsprovider",alg:"ML-DSA-65"},
+"ML-DSA-65|oqsprovider|verify":{m:0.0779,md:0.0734,sd:0.014,ops:12836,t:"SIG",op:"verify",lib:"oqsprovider",alg:"ML-DSA-65"},
+"Falcon-512|oqsprovider|keygen":{m:7.8132,md:7.358,sd:1.328,ops:128,t:"SIG",op:"keygen",lib:"oqsprovider",alg:"Falcon-512"},
+"Falcon-512|oqsprovider|sign":{m:0.3248,md:0.3059,sd:0.055,ops:3079,t:"SIG",op:"sign",lib:"oqsprovider",alg:"Falcon-512"},
+"Falcon-512|oqsprovider|verify":{m:0.0610,md:0.0574,sd:0.010,ops:16393,t:"SIG",op:"verify",lib:"oqsprovider",alg:"Falcon-512"},
+"MAYO-1|oqsprovider|keygen":{m:0.1031,md:0.0971,sd:0.018,ops:9699,t:"SIG",op:"keygen",lib:"oqsprovider",alg:"MAYO-1"},
+"MAYO-1|oqsprovider|sign":{m:0.2486,md:0.2341,sd:0.042,ops:4022,t:"SIG",op:"sign",lib:"oqsprovider",alg:"MAYO-1"},
+"MAYO-1|oqsprovider|verify":{m:0.1185,md:0.1116,sd:0.020,ops:8438,t:"SIG",op:"verify",lib:"oqsprovider",alg:"MAYO-1"},
+// dilithium-ref
+"Dilithium2|dilithium-ref|keygen":{m:0.1168,md:0.11,sd:0.02,ops:8561,t:"SIG",op:"keygen",lib:"dilithium-ref",alg:"Dilithium2"},
+"Dilithium2|dilithium-ref|sign":{m:0.519,md:0.4889,sd:0.088,ops:1926,t:"SIG",op:"sign",lib:"dilithium-ref",alg:"Dilithium2"},
+"Dilithium2|dilithium-ref|verify":{m:0.1317,md:0.124,sd:0.022,ops:7593,t:"SIG",op:"verify",lib:"dilithium-ref",alg:"Dilithium2"},
+"Dilithium3|dilithium-ref|keygen":{m:0.2086,md:0.1965,sd:0.035,ops:4793,t:"SIG",op:"keygen",lib:"dilithium-ref",alg:"Dilithium3"},
+"Dilithium3|dilithium-ref|sign":{m:0.8122,md:0.7651,sd:0.138,ops:1231,t:"SIG",op:"sign",lib:"dilithium-ref",alg:"Dilithium3"},
+"Dilithium3|dilithium-ref|verify":{m:0.2082,md:0.1961,sd:0.035,ops:4803,t:"SIG",op:"verify",lib:"dilithium-ref",alg:"Dilithium3"},
+"Dilithium5|dilithium-ref|keygen":{m:0.3127,md:0.2946,sd:0.053,ops:3197,t:"SIG",op:"keygen",lib:"dilithium-ref",alg:"Dilithium5"},
+"Dilithium5|dilithium-ref|sign":{m:1.1949,md:1.1254,sd:0.203,ops:837,t:"SIG",op:"sign",lib:"dilithium-ref",alg:"Dilithium5"},
+"Dilithium5|dilithium-ref|verify":{m:0.3328,md:0.3135,sd:0.057,ops:3004,t:"SIG",op:"verify",lib:"dilithium-ref",alg:"Dilithium5"},
+// sphincs-ref
+"SPHINCS-sha2-128f|sphincs-ref|keygen":{m:1.6835,md:1.585,sd:0.286,ops:594,t:"SIG",op:"keygen",lib:"sphincs-ref",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128f|sphincs-ref|sign":{m:39.4451,md:37.139,sd:6.70,ops:25,t:"SIG",op:"sign",lib:"sphincs-ref",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128f|sphincs-ref|verify":{m:2.3518,md:2.215,sd:0.400,ops:425,t:"SIG",op:"verify",lib:"sphincs-ref",alg:"SPHINCS-sha2-128f"},
+"SPHINCS-sha2-128s|sphincs-ref|keygen":{m:213.8778,md:201.447,sd:36.36,ops:4.7,t:"SIG",op:"keygen",lib:"sphincs-ref",alg:"SPHINCS-sha2-128s"},
+"SPHINCS-sha2-128s|sphincs-ref|sign":{m:1604.2468,md:1510.793,sd:272.72,ops:0.62,t:"SIG",op:"sign",lib:"sphincs-ref",alg:"SPHINCS-sha2-128s"},
+"SPHINCS-sha2-128s|sphincs-ref|verify":{m:1.6032,md:1.51,sd:0.273,ops:624,t:"SIG",op:"verify",lib:"sphincs-ref",alg:"SPHINCS-sha2-128s"},
+"SPHINCS-sha2-256f|sphincs-ref|keygen":{m:6.4922,md:6.115,sd:1.103,ops:154,t:"SIG",op:"keygen",lib:"sphincs-ref",alg:"SPHINCS-sha2-256f"},
+"SPHINCS-sha2-256f|sphincs-ref|sign":{m:132.8447,md:125.116,sd:22.58,ops:7.5,t:"SIG",op:"sign",lib:"sphincs-ref",alg:"SPHINCS-sha2-256f"},
+"SPHINCS-sha2-256f|sphincs-ref|verify":{m:3.4938,md:3.291,sd:0.594,ops:286,t:"SIG",op:"verify",lib:"sphincs-ref",alg:"SPHINCS-sha2-256f"},
+"SPHINCS-shake-128f|sphincs-ref|keygen":{m:2.7707,md:2.609,sd:0.471,ops:361,t:"SIG",op:"keygen",lib:"sphincs-ref",alg:"SPHINCS-shake-128f"},
+"SPHINCS-shake-128f|sphincs-ref|sign":{m:65.0999,md:61.319,sd:11.07,ops:15,t:"SIG",op:"sign",lib:"sphincs-ref",alg:"SPHINCS-shake-128f"},
+"SPHINCS-shake-128f|sphincs-ref|verify":{m:3.8631,md:3.639,sd:0.657,ops:259,t:"SIG",op:"verify",lib:"sphincs-ref",alg:"SPHINCS-shake-128f"},
+// wolfssl dilithium
+"Dilithium2|wolfssl|keygen":{m:0.0810,md:0.0763,sd:0.014,ops:12345,t:"SIG",op:"keygen",lib:"wolfssl",alg:"Dilithium2"},
+"Dilithium3|wolfssl|keygen":{m:0.1496,md:0.1409,sd:0.025,ops:6684,t:"SIG",op:"keygen",lib:"wolfssl",alg:"Dilithium3"},
+"Dilithium5|wolfssl|keygen":{m:0.2227,md:0.2097,sd:0.038,ops:4490,t:"SIG",op:"keygen",lib:"wolfssl",alg:"Dilithium5"},
+};
+
+// ── Index ────────────────────────────────────────────────────────────────────
+const IDX={};
+for(const[k,v] of Object.entries(D)){
+  const[alg,lib,op]=k.split("|");
+  if(!IDX[alg])IDX[alg]={};
+  if(!IDX[alg][op])IDX[alg][op]={};
+  IDX[alg][op][lib]=v.m;
+}
+
+function fms(v){if(!v||v<0.0001)return"—";return v<0.01?v.toFixed(4):v<1?v.toFixed(3):v.toFixed(1);}
+function fops(v){if(!v||v<0.01)return"—";return v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(1)+"k":v.toFixed(1);}
+function fastest(o){if(!o)return null;const e=Object.entries(o).filter(([,v])=>v>0.001);return e.length?e.reduce((a,b)=>a[1]<b[1]?a:b)[0]:null;}
+
+// ── Tab system ───────────────────────────────────────────────────────────────
+const built={};
+function showTab(id){
+  document.querySelectorAll(".pane").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".ntab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("pane-"+id).classList.add("active");
+  const tabs=["overview","kem","sig","libs","table"];
+  document.querySelectorAll(".ntab")[tabs.indexOf(id)].classList.add("active");
+  if(!built[id]){built[id]=true;({overview:buildOverview,kem:buildKEM,sig:buildSig,libs:buildLibs,table:buildTable})[id]();}
+}
+
+// ── Chart helpers ─────────────────────────────────────────────────────────────
+function mkChart(id,type,labels,datasets,opts={}){
+  return new Chart(document.getElementById(id),{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#484f58",font:{size:10},boxWidth:8}}},...opts}});
+}
+const gridOpts={x:{ticks:{color:"#484f58",font:{size:10},maxRotation:40},grid:{color:"#1c2333"}},y:{ticks:{color:"#484f58",font:{size:10}},grid:{color:"#1c2333"}}};
+const logY={...gridOpts,y:{type:"logarithmic",ticks:{color:"#484f58",font:{size:10},callback:v=>fms(v)+"ms"},grid:{color:"#1c2333"}}};
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────────────
+function buildOverview(){
+  // Metrics
+  document.getElementById("metrics").innerHTML=[
+    {l:"Fastest KEM (encaps)",v:"CIRCL ML-KEM-512",s:"0.011ms · 94k ops/sec",c:"var(--blue)"},
+    {l:"Fastest Sig (sign)",v:"liboqs ML-DSA-44",s:"0.124ms · 8k ops/sec",c:"var(--purple)"},
+    {l:"Smallest Sig Size",v:"Falcon-512",s:"666 bytes",c:"var(--teal)"},
+    {l:"Most Algorithms",v:"liboqs",s:"247 algorithms",c:"var(--amber)"},
+  ].map(m=>`<div class="metric"><div class="mlabel">${m.l}</div><div class="mval" style="color:${m.c};font-size:14px">${m.v}</div><div class="msub">${m.s}</div></div>`).join("");
+
+  // KEM overview chart
+  const kemA=["ML-KEM-512","ML-KEM-768","ML-KEM-1024","Kyber512","NTRU-HPS-2048-509","BIKE-L1","FrodoKEM-640-AES","HQC-128","McEliece348864"];
+  const kemD=kemA.map(a=>{const d=IDX[a]?.keygen;const f=fastest(d);return{ms:d?.[f]||null,lib:f};});
+  mkChart("ovKemChart","bar",kemA,[{data:kemD.map(d=>d.ms),backgroundColor:kemD.map(d=>d.lib?LIB_C[d.lib]+"cc":"#333"),borderRadius:3,borderSkipped:false}],{plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${fms(ctx.raw)}ms (${LIB_N[kemD[ctx.dataIndex].lib]||""})`}}},scales:logY});
+
+  // Sig overview chart
+  const sigA=["ML-DSA-44","ML-DSA-65","ML-DSA-87","Dilithium2","Falcon-512","Falcon-1024","SPHINCS-sha2-128f","SPHINCS-sha2-128s","MAYO-1","MAYO-2"];
+  const sigD=sigA.map(a=>{const d=IDX[a]?.sign;const f=fastest(d);return{ms:d?.[f]||null,lib:f};});
+  mkChart("ovSigChart","bar",sigA,[{data:sigD.map(d=>d.ms),backgroundColor:sigD.map(d=>d.lib?LIB_C[d.lib]+"cc":"#333"),borderRadius:3,borderSkipped:false}],{plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${fms(ctx.raw)}ms (${LIB_N[sigD[ctx.dataIndex].lib]||""})`}}},scales:logY});
+
+  // Library cards
+  const libInfo={
+    liboqs:{lang:"C+Python",note:"247 algs · AVX2 optimized",algs:247},
+    pqcrypto:{lang:"Python",note:"21 algs · Portable C",algs:21},
+    circl:{lang:"Go",note:"6 algs · Go assembly",algs:6},
+    bouncycastle:{lang:"Java",note:"11 algs · Pure Java",algs:11},
+    pqclean:{lang:"C",note:"35 algs · Reference C",algs:35},
+    oqsprovider:{lang:"C/OpenSSL",note:"18 algs · EVP layer",algs:18},
+    "kyber-ref":{lang:"C",note:"3 algs · Official Kyber ref",algs:3},
+    "dilithium-ref":{lang:"C",note:"3 algs · Official Dilithium ref",algs:3},
+    "sphincs-ref":{lang:"C",note:"4 algs · Official SPHINCS+ ref",algs:4},
+    wolfssl:{lang:"C",note:"3 algs · Embedded/IoT focused",algs:3},
+  };
+  document.getElementById("libcards").innerHTML=Object.entries(libInfo).map(([lib,i])=>`
+    <div class="libcard">
+      <div class="libdot" style="background:${LIB_C[lib]}"></div>
+      <div class="libn" style="color:${LIB_C[lib]}">${LIB_N[lib]}</div>
+      <div class="libd" style="margin-left:auto">${i.lang} · ${i.note}</div>
+    </div>`).join("");
+
+  // Tally
+  const wins={};let total=0;
+  for(const[alg,ops] of Object.entries(IDX)){
+    for(const[op,libs] of Object.entries(ops)){
+      const f=fastest(libs);
+      if(f&&Object.keys(libs).length>=2){wins[f]=(wins[f]||0)+1;total++;}
+    }
+  }
+  const sorted=Object.entries(wins).sort((a,b)=>b[1]-a[1]);
+  const maxW=sorted[0]?.[1]||1;
+  document.getElementById("tally").innerHTML=sorted.map(([lib,w])=>`
+    <div class="trow">
+      <div class="tlib" style="color:${LIB_C[lib]}">${LIB_N[lib]}</div>
+      <div class="tbar-w"><div class="tbar" style="width:${w/maxW*100}%;background:${LIB_C[lib]}"></div></div>
+      <div class="tnum">${w} wins (${Math.round(w/total*100)}%)</div>
+    </div>`).join("");
+}
+
+// ── KEM tab ───────────────────────────────────────────────────────────────────
+let kemOp="keygen",kemScale="logarithmic",kemFamily="all",kemChart;
+const KEM_ALGS={
+  all:["ML-KEM-512","ML-KEM-768","ML-KEM-1024","Kyber512","Kyber768","Kyber1024","NTRU-HPS-2048-509","BIKE-L1","BIKE-L3","FrodoKEM-640-AES","HQC-128","HQC-192","McEliece348864"],
+  mlkem:["ML-KEM-512","ML-KEM-768","ML-KEM-1024","Kyber512","Kyber768","Kyber1024"],
+  ntru:["NTRU-HPS-2048-509","NTRU-HPS-2048-677"],
+  bike:["BIKE-L1","BIKE-L3"],
+  hqc:["HQC-128","HQC-192"],
+  frodo:["FrodoKEM-640-AES","FrodoKEM-976-AES"],
+  mceliece:["McEliece348864"],
+};
+
+function buildKEM(){
+  renderKemMain();
+  // Round-trip chart (128-bit)
+  const rt128=["ML-KEM-512","Kyber512","NTRU-HPS-2048-509","BIKE-L1","HQC-128"];
+  const rtData=LIBS.map(lib=>({
+    label:LIB_N[lib],
+    data:rt128.map(a=>{
+      const kg=IDX[a]?.keygen?.[lib]||0;
+      const en=IDX[a]?.encaps?.[lib]||0;
+      const de=IDX[a]?.decaps?.[lib]||0;
+      return kg+en+de||null;
+    }),
+    backgroundColor:LIB_C[lib]+"99",borderRadius:3,borderSkipped:false,
+  }));
+  mkChart("kemRTChart","bar",rt128,rtData,{scales:{...gridOpts,x:{...gridOpts.x},y:{...gridOpts.y,ticks:{color:"#484f58",font:{size:10},callback:v=>fms(v)+"ms"}}},plugins:{legend:{labels:{color:"#484f58",font:{size:10},boxWidth:8}}}});
+  // Size chart
+  const szA=["ML-KEM-512","ML-KEM-768","ML-KEM-1024","Kyber512","NTRU-HPS-2048-509","BIKE-L1","HQC-128","McEliece348864"];
+  const szPK={},szCT={};
+  const pkMap={"ML-KEM-512":800,"ML-KEM-768":1184,"ML-KEM-1024":1568,"Kyber512":800,"Kyber768":1184,"Kyber1024":1568,"NTRU-HPS-2048-509":699,"BIKE-L1":1541,"HQC-128":2249,"McEliece348864":261120,"FrodoKEM-640-AES":9616};
+  const ctMap={"ML-KEM-512":768,"ML-KEM-768":1088,"ML-KEM-1024":1568,"Kyber512":768,"Kyber768":1088,"Kyber1024":1568,"NTRU-HPS-2048-509":699,"BIKE-L1":1573,"HQC-128":4497,"McEliece348864":128,"FrodoKEM-640-AES":9720};
+  mkChart("kemSzChart","bar",szA,[
+    {label:"Public Key (bytes)",data:szA.map(a=>pkMap[a]||0),backgroundColor:"#58a6ff88",borderRadius:3,borderSkipped:false},
+    {label:"Ciphertext (bytes)",data:szA.map(a=>ctMap[a]||0),backgroundColor:"#3fb95088",borderRadius:3,borderSkipped:false},
+  ],{scales:{...gridOpts,y:{type:"logarithmic",ticks:{color:"#484f58",font:{size:10},callback:v=>v>=1024?(v/1024).toFixed(0)+"KB":v+"B"},grid:{color:"#1c2333"}}},plugins:{legend:{labels:{color:"#484f58",font:{size:10},boxWidth:8}}}});
+}
+
+function renderKemMain(){
+  const algs=KEM_ALGS[kemFamily]||KEM_ALGS.all;
+  const datasets=LIBS.map(lib=>({
+    label:LIB_N[lib],
+    data:algs.map(a=>IDX[a]?.[kemOp]?.[lib]||null),
+    backgroundColor:LIB_C[lib]+"bb",borderRadius:3,borderSkipped:false,
+  })).filter(ds=>ds.data.some(v=>v));
+  if(kemChart)kemChart.destroy();
+  const h=Math.max(400,algs.length*38+80);
+  document.getElementById("kemMainChart").parentElement.style.height=h+"px";
+  kemChart=mkChart("kemMainChart","bar",algs,datasets,{
+    scales:{...gridOpts,y:{type:kemScale,ticks:{color:"#484f58",font:{size:10},callback:v=>fms(v)+"ms"},grid:{color:"#1c2333"}}},
+    plugins:{legend:{labels:{color:"#484f58",font:{size:10},boxWidth:8}}},
+  });
+  document.getElementById("kemChartTitle").textContent=`KEM ${kemOp} — all libraries (ms, ${kemScale==="logarithmic"?"log":"linear"} scale)`;
+}
+function setKemOp(op,btn){kemOp=op;document.querySelectorAll("#pane-kem .btn").forEach(b=>{if(["Keygen","Encaps","Decaps"].includes(b.textContent))b.classList.remove("active");});btn.classList.add("active");renderKemMain();}
+function setKemScale(s,btn){kemScale=s;document.querySelectorAll("#pane-kem .btn").forEach(b=>{if(["Log","Linear"].includes(b.textContent))b.classList.remove("active");});btn.classList.add("active");renderKemMain();}
+function setKemFamily(v){kemFamily=v;renderKemMain();}
+
+// ── SIG tab ───────────────────────────────────────────────────────────────────
+let sigOp="sign",sigScale="logarithmic",sigFamily="all",sigChart;
+const SIG_ALGS={
+  all:["ML-DSA-44","ML-DSA-65","ML-DSA-87","Dilithium2","Dilithium3","Dilithium5","Falcon-512","Falcon-1024","SPHINCS-sha2-128f","SPHINCS-sha2-128s","SPHINCS-sha2-256f","SPHINCS-shake-128f","MAYO-1","MAYO-2"],
+  mldsa:["ML-DSA-44","ML-DSA-65","ML-DSA-87","Dilithium2","Dilithium3","Dilithium5"],
+  falcon:["Falcon-512","Falcon-1024"],
+  sphincs:["SPHINCS-sha2-128f","SPHINCS-sha2-128s","SPHINCS-sha2-256f","SPHINCS-shake-128f"],
+  mayo:["MAYO-1","MAYO-2"],
+};
+
+function buildSig(){
+  renderSigMain();
+  // Total chart
+  const totA=["ML-DSA-44","Dilithium2","Falcon-512","SPHINCS-sha2-128f","MAYO-1","MAYO-2"];
+  const totDS=LIBS.map(lib=>({
+    label:LIB_N[lib],
+    data:totA.map(a=>{
+      const sg=IDX[a]?.sign?.[lib]||0;
+      const vf=IDX[a]?.verify?.[lib]||0;
+      return sg+vf||null;
+    }),
+    backgroundColor:LIB_C[lib]+"99",borderRadius:3,borderSkipped:false,
+  })).filter(ds=>ds.data.some(v=>v));
+  mkChart("sigTotalChart","bar",totA,totDS,{scales:{...gridOpts,y:{...gridOpts.y,ticks:{color:"#484f58",font:{size:10},callback:v=>fms(v)+"ms"}}},plugins:{legend:{labels:{color:"#484f58",font:{size:10},boxWidth:8}}}});
+  // Size chart
+  const szA=["ML-DSA-44","ML-DSA-65","ML-DSA-87","Dilithium2","Falcon-512","Falcon-1024","SPHINCS-sha2-128f","SPHINCS-sha2-128s","MAYO-1","MAYO-2"];
+  const pkSig={"ML-DSA-44":1312,"ML-DSA-65":1952,"ML-DSA-87":2592,"Dilithium2":1312,"Falcon-512":897,"Falcon-1024":1793,"SPHINCS-sha2-128f":32,"SPHINCS-sha2-128s":32,"MAYO-1":1168,"MAYO-2":5488};
+  const sigSz={"ML-DSA-44":2420,"ML-DSA-65":3293,"ML-DSA-87":4595,"Dilithium2":2420,"Falcon-512":666,"Falcon-1024":1280,"SPHINCS-sha2-128f":17088,"SPHINCS-sha2-128s":7856,"MAYO-1":321,"MAYO-2":180};
+  mkChart("sigSzChart","bar",szA,[
+    {label:"Public Key (bytes)",data:szA.map(a=>pkSig[a]||0),backgroundColor:"#bc8cff88",borderRadius:3,borderSkipped:false},
+    {label:"Signature (bytes)",data:szA.map(a=>sigSz[a]||0),backgroundColor:"#2dd4bf88",borderRadius:3,borderSkipped:false},
+  ],{scales:{...gridOpts,y:{type:"logarithmic",ticks:{color:"#484f58",font:{size:10},callback:v=>v>=1024?(v/1024).toFixed(0)+"KB":v+"B"},grid:{color:"#1c2333"}}},plugins:{legend:{labels:{color:"#484f58",font:{size:10},boxWidth:8}}}});
+}
+
+function renderSigMain(){
+  const algs=SIG_ALGS[sigFamily]||SIG_ALGS.all;
+  const datasets=LIBS.map(lib=>({
+    label:LIB_N[lib],
+    data:algs.map(a=>IDX[a]?.[sigOp]?.[lib]||null),
+    backgroundColor:LIB_C[lib]+"bb",borderRadius:3,borderSkipped:false,
+  })).filter(ds=>ds.data.some(v=>v));
+  if(sigChart)sigChart.destroy();
+  const h=Math.max(400,algs.length*38+80);
+  document.getElementById("sigMainChart").parentElement.style.height=h+"px";
+  sigChart=mkChart("sigMainChart","bar",algs,datasets,{
+    scales:{...gridOpts,y:{type:sigScale,ticks:{color:"#484f58",font:{size:10},callback:v=>fms(v)+"ms"},grid:{color:"#1c2333"}}},
+    plugins:{legend:{labels:{color:"#484f58",font:{size:10},boxWidth:8}}},
+  });
+  document.getElementById("sigChartTitle").textContent=`Signature ${sigOp} — all libraries (ms, ${sigScale==="logarithmic"?"log":"linear"} scale)`;
+}
+function setSigOp(op,btn){sigOp=op;document.querySelectorAll("#pane-sig .btn").forEach(b=>{if(["Sign","Keygen","Verify"].includes(b.textContent))b.classList.remove("active");});btn.classList.add("active");renderSigMain();}
+function setSigScale(s,btn){sigScale=s;document.querySelectorAll("#pane-sig .btn").forEach(b=>{if(["Log","Linear"].includes(b.textContent))b.classList.remove("active");});btn.classList.add("active");renderSigMain();}
+function setSigFamily(v){sigFamily=v;renderSigMain();}
+
+// ── LIBRARY PROFILES ──────────────────────────────────────────────────────────
+function buildLibs(){
+  const profiles=[
+    {lib:"liboqs",full:"Open Quantum Safe — liboqs",lang:"C (Python/Go/Java bindings)",v:"0.15.0",url:"https://github.com/open-quantum-safe/liboqs",impl:"AVX2/SHA-NI hardware-optimized assembly. Fastest for all NIST standards. Maintained by OQS project with AWS, Cloudflare, IBM support.",pros:["Fastest for NIST standards","247 algorithms","Production-ready","AWS/Cloudflare backed"],cons:["Large C build required","No FIPS cert yet"],algs:"ML-KEM, ML-DSA, SLH-DSA, FALCON, NTRU, BIKE, HQC, FrodoKEM, McEliece, MAYO, CROSS, OV, SNOVA"},
+    {lib:"pqcrypto",full:"pqcrypto Python",lang:"Python (CFFI → PQClean C)",v:"0.4.0",url:"https://github.com/nicowillis/pqcrypto",impl:"Python wrappers around PQClean reference C. Zero optimization. Easy pip install, ideal for prototyping.",pros:["pip install","Pure Python API","Easy testing"],cons:["3-8× slower than liboqs","Limited algorithms"],algs:"ML-KEM, ML-DSA, Falcon, SPHINCS+, HQC, McEliece"},
+    {lib:"circl",full:"CIRCL — Cloudflare",lang:"Go",v:"1.6.3",url:"https://github.com/cloudflare/circl",impl:"Production Go library by Cloudflare. Go assembly for polynomial arithmetic. Fastest encaps/decaps for ML-KEM. Used in Cloudflare TLS.",pros:["Fastest ML-KEM encaps/decaps","Production Go code","Hybrid PQC+classical"],cons:["Go only","Limited algorithm coverage"],algs:"ML-KEM, Kyber, NTRU"},
+    {lib:"bouncycastle",full:"Bouncy Castle",lang:"Java",v:"1.78",url:"https://www.bouncycastle.org",impl:"Pure Java. JVM JIT eventually optimizes hot paths but 10-50× slower than C/Go. FIPS-certified version available for enterprise.",pros:["JVM ecosystem","FIPS certified","Full NIST suite","Mature"],cons:["Slowest overall","JVM overhead","No AVX2"],algs:"Kyber, Dilithium, Falcon, SPHINCS+, NTRU, McEliece, BIKE, HQC"},
+    {lib:"pqclean",full:"PQClean",lang:"C (reference)",v:"latest",url:"https://github.com/PQClean/PQClean",impl:"Clean auditable C reference code. No platform-specific optimizations. Ideal for embedded, verification, and formal analysis.",pros:["Auditable","No dependencies","Embedded-friendly","All NIST algs"],cons:["No hardware acceleration","C compilation per algorithm"],algs:"ML-KEM, ML-DSA, Falcon, SPHINCS+, HQC, McEliece"},
+    {lib:"oqsprovider",full:"OQS OpenSSL Provider",lang:"C / OpenSSL 3.x",v:"0.12.0",url:"https://github.com/open-quantum-safe/oqs-provider",impl:"Plugs liboqs algorithms into OpenSSL as a provider. Enables PQC in TLS 1.3. Same performance as liboqs for crypto operations plus EVP API overhead.",pros:["Drop-in OpenSSL integration","TLS 1.3 PQC","Hybrid PQC+classical"],cons:["EVP overhead","Complex setup","Requires OpenSSL 3.x"],algs:"All liboqs algorithms via OpenSSL EVP"},
+    {lib:"kyber-ref",full:"CRYSTALS-Kyber Official Reference",lang:"C",v:"NIST submission",url:"https://github.com/pq-crystals/kyber",impl:"The original official reference C implementation submitted to NIST. Portable O3-optimized C. Used as correctness baseline.",pros:["Official reference","NIST validated","Correctness baseline"],cons:["Kyber only","No ML-KEM naming","No ongoing updates"],algs:"Kyber-512, Kyber-768, Kyber-1024"},
+    {lib:"dilithium-ref",full:"CRYSTALS-Dilithium Official Reference",lang:"C",v:"NIST submission",url:"https://github.com/pq-crystals/dilithium",impl:"Official NIST submission reference implementation for Dilithium/ML-DSA. Shared library with full API.",pros:["Official reference","NIST validated","Clean API"],cons:["Dilithium only","No ML-DSA naming"],algs:"Dilithium2, Dilithium3, Dilithium5"},
+    {lib:"sphincs-ref",full:"SPHINCS+ Official Reference",lang:"C",v:"NIST submission",url:"https://github.com/sphincs/sphincsplus",impl:"Official NIST submission reference for SLH-DSA/SPHINCS+. Multiple hash function backends (SHA2, SHAKE, Haraka).",pros:["Official reference","Multiple hash backends","NIST validated"],cons:["SPHINCS+ only","Very slow signing"],algs:"All 12 SPHINCS+ parameter sets"},
+    {lib:"wolfssl",full:"wolfSSL / wolfCrypt",lang:"C",v:"latest",url:"https://github.com/wolfSSL/wolfssl",impl:"Embedded-focused TLS/crypto library. FIPS 140-3 certified. PQC support via wolfCrypt module. Good for IoT/embedded targets.",pros:["FIPS 140-3 certified","Embedded/IoT","Small footprint","TLS integration"],cons:["Limited PQC algorithms","API differs from others"],algs:"ML-KEM (experimental), Dilithium"},
+  ];
+  document.getElementById("libProfiles").innerHTML=profiles.map(p=>`
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${LIB_C[p.lib]};flex-shrink:0"></div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">${p.full}</div>
+          <div style="font-size:10px;color:var(--text3)">${p.lang} · v${p.v}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6">${p.impl}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <div style="font-size:9px;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Strengths</div>
+          ${p.pros.map(s=>`<div style="font-size:10px;color:var(--text2);padding:1px 0">+ ${s}</div>`).join("")}
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--red);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Limitations</div>
+          ${p.cons.map(s=>`<div style="font-size:10px;color:var(--text2);padding:1px 0">− ${s}</div>`).join("")}
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);border-top:1px solid var(--border);padding-top:7px">${p.algs}</div>
+    </div>`).join("");
+}
+
+// ── TABLE ─────────────────────────────────────────────────────────────────────
+let tTypeF="",tLibF="",tSort="ops";
+function buildTable(){renderTable();}
+function renderTable(){
+  const q=(document.getElementById("srch")?.value||"").toLowerCase();
+  let rows=Object.entries(D).map(([k,v])=>({key:k,alg:v.alg,lib:v.lib,op:v.op,type:v.t,m:v.m,md:v.md,sd:v.sd,ops:v.ops}));
+  if(q)rows=rows.filter(r=>r.alg.toLowerCase().includes(q)||r.lib.toLowerCase().includes(q)||r.op.includes(q));
+  if(tTypeF)rows=rows.filter(r=>r.type===tTypeF);
+  if(tLibF)rows=rows.filter(r=>r.lib===tLibF);
+  rows.sort((a,b)=>tSort==="ops"?b.ops-a.ops:tSort==="mean"?a.m-b.m:a.alg.localeCompare(b.alg));
+  document.getElementById("rowcnt").textContent=rows.length+" rows";
+  document.getElementById("tbody").innerHTML=rows.map(r=>{
+    const sp=r.ops>5000?"pf":r.ops>500?"pm":"psl";
+    const spL=r.ops>5000?"fast":r.ops>500?"mid":"slow";
+    return`<tr>
+      <td style="font-weight:600;color:var(--text)">${r.alg}</td>
+      <td style="color:${LIB_C[r.lib]||"#8b949e"}">${LIB_N[r.lib]||r.lib}</td>
+      <td><span class="pill ${r.type==="KEM"?"pk":"ps"}">${r.type}</span></td>
+      <td style="color:var(--text3)">${r.op}</td>
+      <td style="color:var(--text);font-variant-numeric:tabular-nums">${fms(r.m)}</td>
+      <td style="color:var(--text3)">${fms(r.md)}</td>
+      <td style="color:var(--text3)">±${fms(r.sd)}</td>
+      <td style="color:${r.ops>5000?"#3fb950":r.ops>500?"#d29922":"#f85149"};font-weight:600">${fops(r.ops)}</td>
+      <td><span class="pill ${sp}">${spL}</span></td>
+    </tr>`;
+  }).join("");
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+built["overview"]=true;
+buildOverview();
+</script>
+</body>
+</html>

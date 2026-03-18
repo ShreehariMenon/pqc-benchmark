@@ -1,0 +1,149 @@
+{
+  "Dilithium2|dilithium-ref|keygen": {
+    "mean_ms": 0.1168,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium2"
+  },
+  "Dilithium2|dilithium-ref|sign": {
+    "mean_ms": 0.519,
+    "type": "SIG",
+    "op": "sign",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium2"
+  },
+  "Dilithium2|dilithium-ref|verify": {
+    "mean_ms": 0.1317,
+    "type": "SIG",
+    "op": "verify",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium2"
+  },
+  "Dilithium3|dilithium-ref|keygen": {
+    "mean_ms": 0.2086,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium3"
+  },
+  "Dilithium3|dilithium-ref|sign": {
+    "mean_ms": 0.8122,
+    "type": "SIG",
+    "op": "sign",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium3"
+  },
+  "Dilithium3|dilithium-ref|verify": {
+    "mean_ms": 0.2082,
+    "type": "SIG",
+    "op": "verify",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium3"
+  },
+  "Dilithium5|dilithium-ref|keygen": {
+    "mean_ms": 0.3127,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium5"
+  },
+  "Dilithium5|dilithium-ref|sign": {
+    "mean_ms": 1.1949,
+    "type": "SIG",
+    "op": "sign",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium5"
+  },
+  "Dilithium5|dilithium-ref|verify": {
+    "mean_ms": 0.3328,
+    "type": "SIG",
+    "op": "verify",
+    "library": "dilithium-ref",
+    "algorithm": "Dilithium5"
+  },
+  "SPHINCS-sha2-128f|sphincs-ref|keygen": {
+    "mean_ms": 1.6835,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-128f"
+  },
+  "SPHINCS-sha2-128f|sphincs-ref|sign": {
+    "mean_ms": 39.4451,
+    "type": "SIG",
+    "op": "sign",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-128f"
+  },
+  "SPHINCS-sha2-128f|sphincs-ref|verify": {
+    "mean_ms": 2.3518,
+    "type": "SIG",
+    "op": "verify",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-128f"
+  },
+  "SPHINCS-sha2-128s|sphincs-ref|keygen": {
+    "mean_ms": 213.8778,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-128s"
+  },
+  "SPHINCS-sha2-128s|sphincs-ref|sign": {
+    "mean_ms": 1604.2468,
+    "type": "SIG",
+    "op": "sign",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-128s"
+  },
+  "SPHINCS-sha2-128s|sphincs-ref|verify": {
+    "mean_ms": 1.6032,
+    "type": "SIG",
+    "op": "verify",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-128s"
+  },
+  "SPHINCS-sha2-256f|sphincs-ref|keygen": {
+    "mean_ms": 6.4922,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-256f"
+  },
+  "SPHINCS-sha2-256f|sphincs-ref|sign": {
+    "mean_ms": 132.8447,
+    "type": "SIG",
+    "op": "sign",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-256f"
+  },
+  "SPHINCS-sha2-256f|sphincs-ref|verify": {
+    "mean_ms": 3.4938,
+    "type": "SIG",
+    "op": "verify",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-sha2-256f"
+  },
+  "SPHINCS-shake-128f|sphincs-ref|keygen": {
+    "mean_ms": 2.7707,
+    "type": "SIG",
+    "op": "keygen",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-shake-128f"
+  },
+  "SPHINCS-shake-128f|sphincs-ref|sign": {
+    "mean_ms": 65.0999,
+    "type": "SIG",
+    "op": "sign",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-shake-128f"
+  },
+  "SPHINCS-shake-128f|sphincs-ref|verify": {
+    "mean_ms": 3.8631,
+    "type": "SIG",
+    "op": "verify",
+    "library": "sphincs-ref",
+    "algorithm": "SPHINCS-shake-128f"
+  }
+}

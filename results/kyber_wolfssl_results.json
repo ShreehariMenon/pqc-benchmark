@@ -1,0 +1,65 @@
+{
+  "Kyber512|kyber-ref|keygen": {
+    "mean_ms": 0.0475,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "kyber-ref",
+    "algorithm": "Kyber512"
+  },
+  "Kyber512|kyber-ref|encaps": {
+    "mean_ms": 0.0592,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "kyber-ref",
+    "algorithm": "Kyber512"
+  },
+  "Kyber512|kyber-ref|decaps": {
+    "mean_ms": 0.0753,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "kyber-ref",
+    "algorithm": "Kyber512"
+  },
+  "Kyber768|kyber-ref|keygen": {
+    "mean_ms": 0.0768,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "kyber-ref",
+    "algorithm": "Kyber768"
+  },
+  "Kyber768|kyber-ref|encaps": {
+    "mean_ms": 0.0896,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "kyber-ref",
+    "algorithm": "Kyber768"
+  },
+  "Kyber768|kyber-ref|decaps": {
+    "mean_ms": 0.1089,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "kyber-ref",
+    "algorithm": "Kyber768"
+  },
+  "Kyber1024|kyber-ref|keygen": {
+    "mean_ms": 0.1223,
+    "type": "KEM",
+    "op": "keygen",
+    "library": "kyber-ref",
+    "algorithm": "Kyber1024"
+  },
+  "Kyber1024|kyber-ref|encaps": {
+    "mean_ms": 0.1378,
+    "type": "KEM",
+    "op": "encaps",
+    "library": "kyber-ref",
+    "algorithm": "Kyber1024"
+  },
+  "Kyber1024|kyber-ref|decaps": {
+    "mean_ms": 0.1628,
+    "type": "KEM",
+    "op": "decaps",
+    "library": "kyber-ref",
+    "algorithm": "Kyber1024"
+  }
+}
